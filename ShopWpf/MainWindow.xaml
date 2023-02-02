@@ -5,8 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ShopWpf"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Api Controller" Height="450" Width="800">
     <Grid>
+        <TabControl>
+            <TabItem Header="Developer">
+                <Grid ShowGridLines="True" Background="#FFE5E5E5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    
+                    <DataGrid Grid.Column="0" Grid.Row="0" d:ItemsSource="{d:SampleData ItemCount=5}"/>
+                    <Button Grid.Column="0" Grid.Row="1" Height="10" Background="red"></Button>
+                </Grid>
+            </TabItem>
+        </TabControl>
 
     </Grid>
 </Window>
