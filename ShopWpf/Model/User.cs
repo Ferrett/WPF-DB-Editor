@@ -5,33 +5,24 @@ using System.Collections.Generic;
 
 namespace ShopWpf.Models
 {
-    public class User
+    public record User
     {
-        [Key]
-        public int ID { get; set; }
+        public int id { get; set; }
 
-        [Required]
-        public string Login { get; set; } = null!;
+        public string login { get; set; } = null!;
 
-        [Required]
-        public string PasswordHash { get; set; } = null!;
+        public string passwordHash { get; set; } = null!;
 
-        [Required]
-        [MaxLength(25), MinLength(4)]
-        public string Nickame { get; set; } = null!;
+        public string nickame { get; set; } = null!;
 
-        [Required]
-        public string AvatarURL { get; set; } = null!;
+        public string avatarURL { get; set; } = null!;
 
-        public string? Email { get; set; }
+        public string? email { get; set; }
 
-        [Required]
-        public float MoneyOnAccount { get; set; }
+        public float moneyOnAccount { get; set; }
 
-        [Required]
-        public DateTime CreationDate { get; set; }
+        public DateTime creationDate { get; set; }
 
-        [Required]
-        public DateTime LastLogInDate { get; set; }
+        public DateTime lastLogInDate { get; set; }
     }
 }

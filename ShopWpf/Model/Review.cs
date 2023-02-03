@@ -5,26 +5,20 @@ using System.Collections.Generic;
 
 namespace ShopWpf.Models
 {
-    public class Review
+    public record Review
     {
-        [Key]
-        public int ID { get; set; }
+        public int id { get; set; }
 
-        [MaxLength(9999)]
-        public string? Text { get; set; }
+        public string? text { get; set; }
 
-        [Required]
-        public bool IsPositive { get; set; }
+        public bool isPositive { get; set; }
 
-        [Required]
-        public DateTime CreationDate { get; set; }
+        public DateTime creationDate { get; set; }
 
-        public DateTime LastEditDate { get; set; }
+        public DateTime lastEditDate { get; set; }
 
-        [Required]
-        public int GameID { get; set; }
+        public int gameID { get; set; }
 
-        [Required]
-        public int UserID { get; set; }
+        public int userID { get; set; }
     }
 }

@@ -4,27 +4,22 @@ using System;
 using System.Collections.Generic;
 namespace ShopWpf.Models
 {
-    public class GameStats
+    public record GameStats
     {
-        [Key]
-        public int ID { get; set; }
+        public int id { get; set; }
 
-        [Required]
-        public int UserID { get; set; }
+        public int userID { get; set; }
 
-        [Required]
-        public int GameID { get; set; } 
+        public int gameID { get; set; } 
 
-        [Required]
-        public float HoursPlayed { get; set; }
+        public float hoursPlayed { get; set; }
 
-        public int AchievementsGot { get; set; }
+        public int achievementsGot { get; set; }
 
-        [Required]
-        public DateTime PurchasehDate { get; set; }
+        public DateTime purchasehDate { get; set; }
 
-        public DateTime LastLaunchDate { get; set; }
+        public DateTime lastLaunchDate { get; set; }
 
-        public int ReviewID { get; set; }
+        public int reviewID { get; set; }
     }
 }

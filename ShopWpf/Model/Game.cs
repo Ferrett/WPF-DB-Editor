@@ -5,27 +5,20 @@ using System.Collections.Generic;
 
 namespace ShopWpf.Models
 {
-    public class Game
+    public record Game
     {
-        [Key]
-        public int ID { get; set; }
+        public int id { get; set; }
 
-        [Required]
-        [MaxLength(25),MinLength(4)]
-        public string Name { get; set; } = null!;
+        public string name { get; set; } = null!;
 
-        [Required]
-        public string LogoURL { get; set; } = null!;
+        public string logoURL { get; set; } = null!;
 
-        [Required]
-        public float Price { get; set; }
+        public float price { get; set; }
 
-        [Required]
-        public  Developer Developer { get; set; } = null!;
+        public int developerID { get; set; } 
 
-        [Required]
-        public DateTime PublishDate { get; set; }
+        public DateTime publishDate { get; set; }
 
-        public int AchievementsCount { get; set; }
+        public int achievementsCount { get; set; }
     }
 }
