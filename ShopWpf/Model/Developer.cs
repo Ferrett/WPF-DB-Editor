@@ -7,20 +7,14 @@ namespace ShopWpf.Models
 {
     public class Developer
     {
-        [Key]
-        public int ID { get; set; }
+        public int id { get; set; }
 
-        [Required]
-        [MaxLength(50), MinLength(4)]
-        public string Name { get; set; } = null!;
+        public string name { get; set; } = null!;
 
-        [Required]
-        public string LogoURL { get; set; } = null!;
+        public string logoURL { get; set; } = null!;
 
-        [Required]
+        public DateTime registrationDate { get; set; }
 
-        public DateTime RegistrationDate { get; set; }
-
-        public ICollection<Game>? PublishedGames { get; set; } = new List<Game>();
+        public ICollection<Game>? publishedGames { get; set; } = new List<Game>();
     }
 }

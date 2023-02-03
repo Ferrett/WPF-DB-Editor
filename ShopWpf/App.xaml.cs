@@ -13,5 +13,6 @@ namespace ShopWpf
     /// </summary>
     public partial class App : Application
     {
+
     }
 }
