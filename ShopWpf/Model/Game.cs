@@ -27,7 +27,5 @@ namespace ShopWpf.Models
         public DateTime PublishDate { get; set; }
 
         public int AchievementsCount { get; set; }
-
-        public ICollection<Review>? Reviews { get; set; } = new List<Review>();
     }
 }

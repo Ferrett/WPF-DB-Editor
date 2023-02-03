@@ -33,8 +33,5 @@ namespace ShopWpf.Models
 
         [Required]
         public DateTime LastLogInDate { get; set; }
-
-        [Required]
-        public ICollection<GameStats>? GamesStats { get; set; } = new List<GameStats>();
     }
 }

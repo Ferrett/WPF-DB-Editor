@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace ShopWpf.Models
 {
-    public class Developer
+    public record Developer
     {
         public int id { get; set; }
 
@@ -14,7 +14,5 @@ namespace ShopWpf.Models
         public string logoURL { get; set; } = null!;
 
         public DateTime registrationDate { get; set; }
-
-        public ICollection<Game>? publishedGames { get; set; } = new List<Game>();
     }
 }

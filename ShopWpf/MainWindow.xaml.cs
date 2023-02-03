@@ -1,11 +1,15 @@
 ﻿using ShopWpf.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -31,31 +35,39 @@ namespace ShopWpf
         }
 
 
-        private void MyWindow_Loaded(object sender, RoutedEventArgs e)
+        private async void MyWindow_Loaded(object sender, RoutedEventArgs e)
         {
-           
+            await GetAllData();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private async Task GetAllData()
         {
             string json = string.Empty;
             string url = @"https://xhvlop3q7v55snb2tvjh7dt57a0jswko.lambda-url.eu-north-1.on.aws/GetAllDevelopers";
+            List<Developer> devs = new List<Developer>();
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.AutomaticDecompression = DecompressionMethods.GZip;
-
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-            using (Stream stream = response.GetResponseStream())
-            using (StreamReader reader = new StreamReader(stream))
+            using (HttpClient client = new HttpClient())
+            using (HttpResponseMessage response = await client.GetAsync(url))
             {
-                json = reader.ReadToEnd();
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    ErrorText.Content= $"Error: {(int)response.StatusCode} ({response.StatusCode})   |   {await response.Content.ReadAsStringAsync()}";
+                    return;
+                }
+
+                devs.AddRange(JsonSerializer.Deserialize<List<Developer>>(await response.Content.ReadAsStringAsync())!);
             }
 
-            List<Developer> devs = new List<Developer>();
-            devs = JsonSerializer.Deserialize<List<Developer>>(json);
+
+            TableGrid.ItemsSource = devs;
+
             
-            DevGrid.ItemsSource = devs;
-            
+
+            TableGrid.Visibility = Visibility.Visible;
+            ErrorText.Visibility= Visibility.Collapsed;
+
+
         }
+
     }
 }
