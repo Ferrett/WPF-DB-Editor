@@ -11,7 +11,7 @@ namespace ShopWpf.Models
 
         public string name { get; set; } = null!;
 
-        public string logoURL { get; set; } = null!;
+        public string logoURL { get; set; }
 
         public DateTime registrationDate { get; set; }
     }

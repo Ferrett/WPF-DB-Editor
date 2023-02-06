@@ -1,15 +1,19 @@
 ﻿using ShopWpf.Models;
 using System;
+using System.CodeDom;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Printing;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -28,65 +32,107 @@ namespace ShopWpf
     {
         public MainWindow()
         {
-            Loaded += MyWindow_Loaded;
             InitializeComponent();
         }
 
-        private async void MyWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-            await GetAllData();
-        }
+        string APIurl = @"https://xhvlop3q7v55snb2tvjh7dt57a0jswko.lambda-url.eu-north-1.on.aws";
 
-        List<Developer> devs = new List<Developer>();
-        private async Task GetAllData()
+        List<dynamic> Table = new List<dynamic>();
+
+        private async Task GetRequest(string tableName)
         {
-            string url = @"https://xhvlop3q7v55snb2tvjh7dt57a0jswko.lambda-url.eu-north-1.on.aws/GetAllDevelopers";
+            Table = new List<dynamic>();
 
             using (HttpClient client = new HttpClient())
-            using (HttpResponseMessage response = await client.GetAsync(url))
+            using (HttpResponseMessage response = await client.GetAsync($"{APIurl}/{tableName}/GetAll"))
             {
                 if (response.StatusCode != HttpStatusCode.OK)
                 {
-                    ErrorText.Content = $"Error: {(int)response.StatusCode} ({response.StatusCode})   |   {await response.Content.ReadAsStringAsync()}";
+                    ShowError($"Error: {(int)response.StatusCode} ({response.StatusCode})   |   {await response.Content.ReadAsStringAsync()}");
                     return;
                 }
 
-                devs.AddRange(JsonSerializer.Deserialize<List<Developer>>(await response.Content.ReadAsStringAsync())!);
+                StoreDataInTable(response.Content.ReadAsStringAsync().Result);
             }
-            TableGrid.ItemsSource = devs;
-
-            TableGrid.Visibility = Visibility.Visible;
-            ErrorText.Visibility = Visibility.Collapsed;
         }
 
+        private void StoreDataInTable(string content)
+        {
+            switch ((TabControl.SelectedItem as TabItem)!.Tag.ToString()!)
+            {
+                case "Developer":
+                    Table.AddRange(JsonSerializer.Deserialize<List<Developer>>(content)!);
+                    break;
+
+                case "Game":
+                    Table.AddRange(JsonSerializer.Deserialize<List<Game>>(content)!);
+                    break;
+
+                case "GameStats":
+                    Table.AddRange(JsonSerializer.Deserialize<List<GameStats>>(content)!);
+                    break;
+
+                case "Review":
+                    Table.AddRange(JsonSerializer.Deserialize<List<Review>>(content)!);
+                    break;
+
+                case "User":
+                    Table.AddRange(JsonSerializer.Deserialize<List<User>>(content)!);
+                    break;
+
+                default:
+                    break;
+            }
+        }
 
 
         private void Post_Click(object sender, RoutedEventArgs e)
         {
-            if (devs.Count == 0)
-            {
-                TableGrid.Visibility = Visibility.Visible;
-                ErrorText.Visibility = Visibility.Collapsed;
-            }
-            devs.Add(new Developer { id = 0, logoURL = "temp", name = "temp", registrationDate = DateTime.UtcNow });
-            TableGrid.ItemsSource = null;
-            TableGrid.ItemsSource = devs;
+            //Http post
+            //Table.Add(new Developer { id = 0, logoURL = "temp", name = "temp", registrationDate = DateTime.UtcNow });
+
+            UpdateDataGrid();
         }
 
         private void Delete_Click(object sender, RoutedEventArgs e)
         {
-            if (devs.Count == 0)
-                return;
 
-            if (devs.Count == 1)
+            // delete selected index
+            //Http delete
+            //Table.Remove(Table.Last());
+
+            UpdateDataGrid();
+        }
+
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ShowError("Loading...");
+            UpdateDataGrid();
+        }
+
+        private async void UpdateDataGrid()
+        {
+            DataGrid.ItemsSource = null;
+            await GetRequest((TabControl.SelectedItem as TabItem)!.Tag.ToString()!);
+
+            if (Table.Count != 0)
             {
-                TableGrid.Visibility = Visibility.Collapsed;
-                ErrorText.Visibility = Visibility.Visible;
-                ErrorText.Content = "Table is empty";
+                DataGrid.ItemsSource = Table;
+                ShowDataGrid();
             }
-                devs.Remove(devs.Last());
-                TableGrid.ItemsSource = null;
-                TableGrid.ItemsSource = devs;
+        }
+
+        private void ShowDataGrid()
+        {
+            DataGrid.Visibility = Visibility.Visible;
+            ErrorText.Visibility = Visibility.Collapsed;
+        }
+
+        private void ShowError(string errorText)
+        {
+            DataGrid.Visibility = Visibility.Collapsed;
+            ErrorText.Visibility = Visibility.Visible;
+            ErrorText.Content = errorText;
         }
     }
 }

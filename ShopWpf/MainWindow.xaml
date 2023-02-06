@@ -24,16 +24,26 @@
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
 
-            <TabControl Grid.Column="0" Grid.Row="0">
-                <TabItem Header="Developer">
+            <Grid Grid.Column="0" Grid.Row="0" Background="White">
+                <StackPanel>
+                    <Grid Background="#FFE5E5E5">
+                        <TabControl x:Name="TabControl" BorderThickness="0" SelectionChanged="TabControl_SelectionChanged">
+                            <TabItem Tag="Developer" Height="30" Padding="10,0,10,0" Header="Developers"></TabItem>
+                            <TabItem Tag="Game" Height="30" Padding="10,0,10,0" Header="Games"></TabItem>
+                            <TabItem Tag="GameStats" Height="30" Padding="10,0,10,0" Header="GamesStats"></TabItem>
+                            <TabItem Tag="Review" Height="30" Padding="10,0,10,0" Header="Reviews"></TabItem>
+                            <TabItem Tag="User" Height="30" Padding="10,0,10,0" Header="Users"></TabItem>
+                        </TabControl>
+                        
+                        <Button x:Name="RefreshBtn" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,0,0,0" Width="30" Height="30" Content="⭯"></Button>
+                    </Grid>
 
-                    <StackPanel>
-                        <DataGrid MaxHeight="600" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" x:Name="TableGrid" IsReadOnly="True" Visibility="Collapsed" ColumnWidth="*"/>
-                        <Label x:Name="ErrorText" VerticalAlignment="Center" HorizontalAlignment="Center" Content="Loading..."></Label>
-                    </StackPanel>
-
-                </TabItem>
-            </TabControl>
+                    <Grid>
+                        <DataGrid x:Name="DataGrid" MaxHeight="600" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" Visibility="Collapsed" ColumnWidth="*"/>
+                        <Label x:Name="ErrorText" VerticalAlignment="Top" HorizontalAlignment="Center" Content="Loading..."></Label>
+                    </Grid>
+                </StackPanel>
+            </Grid>
 
             <Grid MinHeight="40" Margin="0,0,0,10" Grid.Column="0" Grid.Row="1">
                 <Grid.ColumnDefinitions>
