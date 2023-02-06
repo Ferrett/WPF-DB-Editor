@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ShopWpf"
         mc:Ignorable="d"
-        Title="Api Controller" MaxHeight="800" ResizeMode="NoResize" SizeToContent="Height"  Width="900">
+        Title="Api Controller" MaxHeight="800"  SizeToContent="Height"  Width="900">
 
     <Grid Background="#FFE5E5E5">
         <Grid.ColumnDefinitions>
@@ -35,11 +35,11 @@
                             <TabItem Tag="User" Height="30" Padding="10,0,10,0" Header="Users"></TabItem>
                         </TabControl>
                         
-                        <Button x:Name="RefreshBtn" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,0,0,0" Width="30" Height="30" Content="⭯"></Button>
+                        <Button x:Name="RefreshBtn" Click="RefreshBtn_Click" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,0,0,0" Width="30" Height="30" Content="⭯"></Button>
                     </Grid>
 
                     <Grid>
-                        <DataGrid x:Name="DataGrid" MaxHeight="600" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" Visibility="Collapsed" ColumnWidth="*"/>
+                        <DataGrid SelectedCellsChanged="DataGrid_SelectedCellsChanged" x:Name="DataGrid" MaxHeight="600" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" Visibility="Collapsed" ColumnWidth="*"/>
                         <Label x:Name="ErrorText" VerticalAlignment="Top" HorizontalAlignment="Center" Content="Loading..."></Label>
                     </Grid>
                 </StackPanel>

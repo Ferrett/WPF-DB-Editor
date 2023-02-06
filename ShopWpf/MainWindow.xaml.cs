@@ -30,29 +30,41 @@ namespace ShopWpf
 {
     public partial class MainWindow : Window
     {
+        string APIurl = @"https://xhvlop3q7v55snb2tvjh7dt57a0jswko.lambda-url.eu-north-1.on.aws";
+        List<dynamic> Table = new List<dynamic>();
+
         public MainWindow()
         {
             InitializeComponent();
         }
-
-        string APIurl = @"https://xhvlop3q7v55snb2tvjh7dt57a0jswko.lambda-url.eu-north-1.on.aws";
-
-        List<dynamic> Table = new List<dynamic>();
 
         private async Task GetRequest(string tableName)
         {
             Table = new List<dynamic>();
 
             using (HttpClient client = new HttpClient())
-            using (HttpResponseMessage response = await client.GetAsync($"{APIurl}/{tableName}/GetAll"))
+            using (HttpResponseMessage response = await client.GetAsync($"{APIurl}/{tableName}/{Routes.GetRequest}"))
             {
                 if (response.StatusCode != HttpStatusCode.OK)
                 {
-                    ShowError($"Error: {(int)response.StatusCode} ({response.StatusCode})   |   {await response.Content.ReadAsStringAsync()}");
+                    HideDataGrid($"Error: {(int)response.StatusCode} ({response.StatusCode})   |   {await response.Content.ReadAsStringAsync()}");
                     return;
                 }
 
                 StoreDataInTable(response.Content.ReadAsStringAsync().Result);
+            }
+        }
+
+        private async Task DeleteRequest(string tableName, int ID)
+        {
+            using (HttpClient client = new HttpClient())
+            using (HttpResponseMessage response = await client.DeleteAsync($"{APIurl}/{tableName}/{Routes.DeleteRequest}/{ID}"))
+            {
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    HideDataGrid($"Error: {(int)response.StatusCode} ({response.StatusCode})   |   {await response.Content.ReadAsStringAsync()}");
+                    return;
+                }
             }
         }
 
@@ -85,6 +97,7 @@ namespace ShopWpf
             }
         }
 
+        int DataGridSelectedID;
 
         private void Post_Click(object sender, RoutedEventArgs e)
         {
@@ -94,24 +107,22 @@ namespace ShopWpf
             UpdateDataGrid();
         }
 
-        private void Delete_Click(object sender, RoutedEventArgs e)
+        private async void Delete_Click(object sender, RoutedEventArgs e)
         {
-
-            // delete selected index
-            //Http delete
-            //Table.Remove(Table.Last());
-
+            HideDataGrid();
+            await DeleteRequest((TabControl.SelectedItem as TabItem)!.Tag.ToString()!, DataGridSelectedID);
             UpdateDataGrid();
         }
 
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ShowError("Loading...");
             UpdateDataGrid();
         }
 
         private async void UpdateDataGrid()
         {
+            HideDataGrid();
+
             DataGrid.ItemsSource = null;
             await GetRequest((TabControl.SelectedItem as TabItem)!.Tag.ToString()!);
 
@@ -128,11 +139,27 @@ namespace ShopWpf
             ErrorText.Visibility = Visibility.Collapsed;
         }
 
-        private void ShowError(string errorText)
+        private void HideDataGrid(string errorText = "Loading...")
         {
             DataGrid.Visibility = Visibility.Collapsed;
             ErrorText.Visibility = Visibility.Visible;
             ErrorText.Content = errorText;
+        }
+
+        private void RefreshBtn_Click(object sender, RoutedEventArgs e)
+        {
+            UpdateDataGrid();
+        }
+
+        private void DataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
+        {
+            if (DataGrid.SelectedIndex == -1)
+                return;
+
+            string a = DataGrid.SelectedValue.ToString()!;
+            a = a.Substring(a.IndexOf("=") + 1);
+            a = a.Substring(0, a.IndexOf(","));
+            DataGridSelectedID = int.Parse(a);
         }
     }
 }
