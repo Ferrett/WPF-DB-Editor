@@ -101,14 +101,14 @@ namespace ShopWpf
 
         private void Post_Click(object sender, RoutedEventArgs e)
         {
-            //Http post
-            //Table.Add(new Developer { id = 0, logoURL = "temp", name = "temp", registrationDate = DateTime.UtcNow });
-
-            UpdateDataGrid();
+            Panelka.Visibility = Visibility.Visible;
         }
 
         private async void Delete_Click(object sender, RoutedEventArgs e)
         {
+            if (DataGrid.SelectedIndex == -1)
+                return;
+
             HideDataGrid();
             await DeleteRequest((TabControl.SelectedItem as TabItem)!.Tag.ToString()!, DataGridSelectedID);
             UpdateDataGrid();
@@ -160,6 +160,11 @@ namespace ShopWpf
             a = a.Substring(a.IndexOf("=") + 1);
             a = a.Substring(0, a.IndexOf(","));
             DataGridSelectedID = int.Parse(a);
+        }
+
+        private void MenuCloseBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Panelka.Visibility = Visibility.Collapsed;
         }
     }
 }

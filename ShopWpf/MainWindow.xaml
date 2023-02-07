@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ShopWpf"
         mc:Ignorable="d"
-        Title="Api Controller" MaxHeight="800"  SizeToContent="Height"  Width="900">
+        Title="Api Controller" MaxHeight="800" MinHeight="500"  SizeToContent="Height"  Width="1100">
 
     <Grid Background="#FFE5E5E5">
         <Grid.ColumnDefinitions>
@@ -13,10 +13,31 @@
             <ColumnDefinition Width="auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <Grid x:Name="Panelka" Grid.Column="1" Grid.Row="0" Width="auto" Visibility="Collapsed">
-            <Button x:Name="TestBtn" Width="100" Height="30" ></Button>
-            <!--menushka-->
-        </Grid>
+        <Border x:Name="Panelka" Grid.Row="0" Grid.Column="1" BorderBrush="Black"  BorderThickness="2,0,0,0" Visibility="Visible">
+            <Grid>
+                <StackPanel x:Name="Menu">
+
+                    <StackPanel x:Name="DeveloperMenu">
+                        <Label HorizontalAlignment="Center" Content="Logo"></Label>
+                        <Image   Width="200" Height="auto" Margin="10,0,10,0" Source="C:\Users\admin\Desktop\Dummy.png"></Image>
+                        <Button  Width="auto" Margin="10,10,10,0" Height="30" Content="Open..."></Button>
+                        <Line X1="0" X2="220" Stroke="Black" Margin="0,10,0,10"></Line>
+                        <Label HorizontalAlignment="Center" Content="Developer name"></Label>
+                        <TextBlock Margin="10,0" Background="White"></TextBlock>
+                    </StackPanel>
+                    <StackPanel x:Name="Log" Margin="0,10,0,0">
+                        <Line X1="0" X2="220" Stroke="Black" Margin="0,10,0,10"></Line>
+                        <TextBlock Background="White" Height="auto" MaxWidth="220" Margin="10,0" Visibility="Visible" TextWrapping="Wrap" Text="cfff fdfffffd ddddddddddddddddd ddddddddddddddddddddddfffff fffffffffffffff fffffffffffffff fffffffffffffff fffffffffffffff"></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel VerticalAlignment="Bottom">
+                        <Line X1="0" X2="220" Stroke="Black"></Line>
+                        <Button x:Name="MenuSubmitBtn"  Click="MenuCloseBtn_Click" Width="auto" Height="30" Margin="10,10,10,10" Background="Lime" Content="Submit"></Button>
+                        <Button x:Name="MenuCloseBtn" Click="MenuCloseBtn_Click" Width="auto" Height="30" Margin="10,0,10,10" Background="Red" Content="Close"></Button>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </Border>
 
         <Grid Grid.Column="0" Grid.Row="0">
             <Grid.RowDefinitions>
@@ -34,7 +55,7 @@
                             <TabItem Tag="Review" Height="30" Padding="10,0,10,0" Header="Reviews"></TabItem>
                             <TabItem Tag="User" Height="30" Padding="10,0,10,0" Header="Users"></TabItem>
                         </TabControl>
-                        
+
                         <Button x:Name="RefreshBtn" Click="RefreshBtn_Click" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,0,0,0" Width="30" Height="30" Content="⭯"></Button>
                     </Grid>
 
@@ -52,10 +73,10 @@
                     <ColumnDefinition></ColumnDefinition>
                     <ColumnDefinition></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Grid.Row="0" Width="150" Height="30" VerticalAlignment="Bottom" Background="Cyan" Content="Get"></Button>
-                <Button Grid.Column="1" Grid.Row="0" Width="150" Height="30" VerticalAlignment="Bottom" Background="Lime" Click="Post_Click" Content="Post"></Button>
-                <Button Grid.Column="2" Grid.Row="0" Width="150" Height="30" VerticalAlignment="Bottom" Background="Orange" Content="Put"></Button>
-                <Button Grid.Column="3" Grid.Row="0" Width="150" Height="30" VerticalAlignment="Bottom" Background="red" Click="Delete_Click" Content="Delete"></Button>
+                <Button Grid.Column="0" Grid.Row="0" Width="200" Height="30" VerticalAlignment="Bottom" Background="Cyan" Content="Get"></Button>
+                <Button Grid.Column="1" Grid.Row="0" Width="200" Height="30" VerticalAlignment="Bottom" Background="Lime" Click="Post_Click" Content="Post"></Button>
+                <Button Grid.Column="2" Grid.Row="0" Width="200" Height="30" VerticalAlignment="Bottom" Background="Orange" Content="Put"></Button>
+                <Button Grid.Column="3" Grid.Row="0" Width="200" Height="30" VerticalAlignment="Bottom" Background="red" Click="Delete_Click" Content="Delete"></Button>
             </Grid>
         </Grid>
     </Grid>
