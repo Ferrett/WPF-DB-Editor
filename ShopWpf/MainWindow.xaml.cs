@@ -1,4 +1,5 @@
-﻿using ShopWpf.Models;
+﻿using Microsoft.Win32;
+using ShopWpf.Models;
 using System;
 using System.CodeDom;
 using System.Collections;
@@ -24,7 +25,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
+
 
 namespace ShopWpf
 {
@@ -66,6 +67,37 @@ namespace ShopWpf
                     return;
                 }
             }
+        }
+
+        private async Task PostRequest(string tableName, string content)
+        {
+            using (HttpClient client = new HttpClient())
+            using (HttpResponseMessage response = await client.PostAsync($"{APIurl}/{tableName}/{Routes.PostRequest}/{content}", null))
+            {
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    ShowRequestLog($"Error: {(int)response.StatusCode} ({response.StatusCode})   |   {await response.Content.ReadAsStringAsync()}");
+                }
+                else
+                {
+                    ShowRequestLog("Data Posted successfuy");
+                }
+            }
+        }
+
+        private async void MenuSubmitBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (String.IsNullOrEmpty(DeveloperName.Text))
+            {
+                ShowRequestLog("Error: Developer name is empty");
+
+                return;
+            }
+
+            string content = $"{DeveloperName.Text}";
+
+            await PostRequest((TabControl.SelectedItem as TabItem)!.Tag.ToString()!, content);
+            UpdateDataGrid();
         }
 
         private void StoreDataInTable(string content)
@@ -139,6 +171,17 @@ namespace ShopWpf
             ErrorText.Visibility = Visibility.Collapsed;
         }
 
+        private void ShowRequestLog(string errorText)
+        {
+            ErrorLogPanel.Visibility = Visibility.Visible;
+            ErrorTextBlock.Text = errorText; 
+        }
+
+        private void HideRequestLog()
+        {
+            ErrorLogPanel.Visibility = Visibility.Collapsed;
+        }
+
         private void HideDataGrid(string errorText = "Loading...")
         {
             DataGrid.Visibility = Visibility.Collapsed;
@@ -150,6 +193,8 @@ namespace ShopWpf
         {
             UpdateDataGrid();
         }
+
+
 
         private void DataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
         {
@@ -166,5 +211,17 @@ namespace ShopWpf
         {
             Panelka.Visibility = Visibility.Collapsed;
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialogLoad = new OpenFileDialog();
+
+            if (openFileDialogLoad.ShowDialog() == true)
+            {
+                Logo.Source = new BitmapImage(new Uri(openFileDialogLoad.FileName));
+            }
+        }
+
+
     }
 }

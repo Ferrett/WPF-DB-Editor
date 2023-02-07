@@ -12,5 +12,7 @@ namespace ShopWpf
         public static string GetByIDRequest = "Get";
 
         public static string DeleteRequest = "Delete";
+
+        public static string PostRequest = "Post";
     }
 }
