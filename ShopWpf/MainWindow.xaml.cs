@@ -1,37 +1,21 @@
 ﻿using Microsoft.Win32;
+using ShopWpf.Logic;
 using ShopWpf.Models;
 using System;
-using System.CodeDom;
-using System.Collections;
 using System.Collections.Generic;
-using System.Data;
-using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Json;
-using System.Printing;
-using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-
 
 namespace ShopWpf
 {
     public partial class MainWindow : Window
     {
-        string APIurl = @"https://xhvlop3q7v55snb2tvjh7dt57a0jswko.lambda-url.eu-north-1.on.aws";
         List<dynamic> Table = new List<dynamic>();
 
         public MainWindow()
@@ -39,53 +23,39 @@ namespace ShopWpf
             InitializeComponent();
         }
 
-        private async Task GetRequest(string tableName)
+        private void Put_Click(object sender, RoutedEventArgs e)
         {
-            Table = new List<dynamic>();
-
-            using (HttpClient client = new HttpClient())
-            using (HttpResponseMessage response = await client.GetAsync($"{APIurl}/{tableName}/{Routes.GetRequest}"))
-            {
-                if (response.StatusCode != HttpStatusCode.OK)
-                {
-                    HideDataGrid($"Error: {(int)response.StatusCode} ({response.StatusCode})   |   {await response.Content.ReadAsStringAsync()}");
-                    return;
-                }
-
-                StoreDataInTable(response.Content.ReadAsStringAsync().Result);
-            }
+            post = false;
+            ItemMenu.Visibility = Visibility.Visible;
+            
         }
 
-        private async Task DeleteRequest(string tableName, int ID)
+        private async void Put()
         {
-            using (HttpClient client = new HttpClient())
-            using (HttpResponseMessage response = await client.DeleteAsync($"{APIurl}/{tableName}/{Routes.DeleteRequest}/{ID}"))
+            Developer selectedDev = (Table[DataGrid.SelectedIndex] as Developer)!;
+
+            if (DevTest.IsFieldEmpty(selectedDev, DeveloperName.Text))
             {
-                if (response.StatusCode != HttpStatusCode.OK)
-                {
-                    HideDataGrid($"Error: {(int)response.StatusCode} ({response.StatusCode})   |   {await response.Content.ReadAsStringAsync()}");
-                    return;
-                }
+                ShowRequestLog("Error: field is empty");
+                return;
             }
+
+            if (DevTest.IsAnyChanges(selectedDev, Logo, DeveloperName.Text))
+            {
+                ShowRequestLog($"Error: No changes");
+                return;
+            }
+
+            HideDataGrid();
+
+            string reqContent = $"{DeveloperName.Text}";
+            //ShowRequestLog(await DevTest.PutReq(reqContent, Logo, DeveloperName.Text, (TabControl.SelectedItem as TabItem)!.Tag.ToString()!).Result);
+            await DevTest.PutReq(DataGrid, reqContent, Logo, DeveloperName.Text, (TabControl.SelectedItem as TabItem)!.Tag.ToString()!);
+            ShowRequestLog(DevTest.Result);
+            UpdateDataGrid();
         }
 
-        private async Task PostRequest(string tableName, string content)
-        {
-            using (HttpClient client = new HttpClient())
-            using (HttpResponseMessage response = await client.PostAsync($"{APIurl}/{tableName}/{Routes.PostRequest}/{content}", null))
-            {
-                if (response.StatusCode != HttpStatusCode.OK)
-                {
-                    ShowRequestLog($"Error: {(int)response.StatusCode} ({response.StatusCode})   |   {await response.Content.ReadAsStringAsync()}");
-                }
-                else
-                {
-                    ShowRequestLog("Data Posted successfuy");
-                }
-            }
-        }
-
-        private async void MenuSubmitBtn_Click(object sender, RoutedEventArgs e)
+        private async void Post()
         {
             if (String.IsNullOrEmpty(DeveloperName.Text))
             {
@@ -94,10 +64,117 @@ namespace ShopWpf
                 return;
             }
 
-            string content = $"{DeveloperName.Text}";
+            HideDataGrid();
 
-            await PostRequest((TabControl.SelectedItem as TabItem)!.Tag.ToString()!, content);
+            string content = $"{DeveloperName.Text}";
+            MultipartFormDataContent? multipartContent = null;
+
+            HttpResponseMessage a;
+            if (Logo.Source == null)
+            {
+                a = await Requests.PostRequest((TabControl.SelectedItem as TabItem)!.Tag.ToString()!, content);
+            }
+            else
+            {
+                multipartContent = new MultipartFormDataContent();
+                multipartContent.Add(new ByteArrayContent(Tools.ImageToHttpContent(Logo)), "logo", "filename");
+                a = await Requests.PostRequest((TabControl.SelectedItem as TabItem)!.Tag.ToString()!, content, multipartContent);
+            }
+
+            if (a.StatusCode != HttpStatusCode.OK)
+            {
+                ShowRequestLog($"Error: {(int)a.StatusCode} ({a.StatusCode})   |   {await a.Content.ReadAsStringAsync()}");
+                return;
+            }
+            else
+            {
+                ShowRequestLog("Data Posted successfuy");
+            }
+
             UpdateDataGrid();
+        }
+        private async void MenuSubmitBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if(post)
+            {
+                Post();
+            }
+            else
+            {
+                Put();
+            }
+        }
+
+        bool post;
+        private void Post_Click(object sender, RoutedEventArgs e)
+        {
+            post= true;
+            ItemMenu.Visibility = Visibility.Visible;
+        }
+
+        private async void Delete_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataGrid.SelectedIndex == -1)
+                return;
+
+            HideDataGrid();
+            HttpResponseMessage a = await Requests.DeleteRequest((TabControl.SelectedItem as TabItem)!.Tag.ToString()!, Tools.DataGridSelectedID(DataGrid));
+            if (a.StatusCode != HttpStatusCode.OK)
+            {
+                HideDataGrid($"Error: {(int)a.StatusCode} ({a.StatusCode})   |   {await a.Content.ReadAsStringAsync()}");
+                return;
+            }
+            UpdateDataGrid();
+        }
+
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ItemMenu.Visibility = Visibility.Collapsed;
+            GetMenu.Visibility = Visibility.Collapsed;
+            UpdateDataGrid();
+        }
+
+        private void MenuCloseBtn_Click(object sender, RoutedEventArgs e)
+        {
+            ItemMenu.Visibility = Visibility.Collapsed;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialogLoad = new OpenFileDialog();
+
+            if (openFileDialogLoad.ShowDialog() == true)
+            {
+                LogoDefault.Source = null;
+                Logo.Source = new BitmapImage(new Uri(openFileDialogLoad.FileName));
+            }
+        }
+
+        private void Get_Click(object sender, RoutedEventArgs e)
+        {
+            switch ((TabControl.SelectedItem as TabItem)!.Tag.ToString()!)
+            {
+                case "Developer":
+                    {
+                        Developer selectedDev = (Table[DataGrid.SelectedIndex] as Developer)!;
+
+                        var fullFilePath = selectedDev.logoURL;
+
+                        BitmapImage bitmap = new BitmapImage();
+                        bitmap.BeginInit();
+                        bitmap.UriSource = new Uri(fullFilePath, UriKind.Absolute);
+                        bitmap.EndInit();
+
+                        GetLogo.Source = bitmap;
+                        GetDeveloperName.Text = selectedDev.name;
+                        break;
+                    }
+
+                default:
+                    break;
+            }
+
+            GetMenu.Visibility = Visibility.Visible;
         }
 
         private void StoreDataInTable(string content)
@@ -129,63 +206,51 @@ namespace ShopWpf
             }
         }
 
-        int DataGridSelectedID;
 
-        private void Post_Click(object sender, RoutedEventArgs e)
-        {
-            Panelka.Visibility = Visibility.Visible;
-        }
 
-        private async void Delete_Click(object sender, RoutedEventArgs e)
-        {
-            if (DataGrid.SelectedIndex == -1)
-                return;
-
-            HideDataGrid();
-            await DeleteRequest((TabControl.SelectedItem as TabItem)!.Tag.ToString()!, DataGridSelectedID);
-            UpdateDataGrid();
-        }
-
-        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            UpdateDataGrid();
-        }
+        
 
         private async void UpdateDataGrid()
         {
             HideDataGrid();
 
             DataGrid.ItemsSource = null;
-            await GetRequest((TabControl.SelectedItem as TabItem)!.Tag.ToString()!);
 
-            if (Table.Count != 0)
+            Table = new List<dynamic>();
+            HttpResponseMessage a = await Requests.GetRequest((TabControl.SelectedItem as TabItem)!.Tag.ToString()!);
+
+            if (a.StatusCode != HttpStatusCode.OK)
             {
-                DataGrid.ItemsSource = Table;
-                ShowDataGrid();
+                HideDataGrid($"Error: {(int)a.StatusCode} ({a.StatusCode})   |   {await a.Content.ReadAsStringAsync()}");
+                return;
             }
+            StoreDataInTable(a.Content.ReadAsStringAsync().Result);
+            DataGrid.ItemsSource = Table;
+
+            ShowDataGrid();
+            UpdateCRUDButtons();
         }
 
         private void ShowDataGrid()
         {
             DataGrid.Visibility = Visibility.Visible;
             ErrorText.Visibility = Visibility.Collapsed;
+            MenuSubmitBtn.IsEnabled = true;
         }
 
         private void ShowRequestLog(string errorText)
         {
             ErrorLogPanel.Visibility = Visibility.Visible;
-            ErrorTextBlock.Text = errorText; 
-        }
-
-        private void HideRequestLog()
-        {
-            ErrorLogPanel.Visibility = Visibility.Collapsed;
+            ErrorTextBlock.Text = errorText;
         }
 
         private void HideDataGrid(string errorText = "Loading...")
         {
+            CRUDButtons.Visibility = Visibility.Hidden;
+            RefreshBtn.Visibility = Visibility.Hidden;
             DataGrid.Visibility = Visibility.Collapsed;
             ErrorText.Visibility = Visibility.Visible;
+            MenuSubmitBtn.IsEnabled = false;
             ErrorText.Content = errorText;
         }
 
@@ -194,34 +259,31 @@ namespace ShopWpf
             UpdateDataGrid();
         }
 
+        private void UpdateCRUDButtons()
+        {
+            CRUDButtons.Visibility = Visibility.Visible;
+            RefreshBtn.Visibility = Visibility.Visible;
+        }
 
-
-        private void DataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
+        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (DataGrid.SelectedIndex == -1)
-                return;
-
-            string a = DataGrid.SelectedValue.ToString()!;
-            a = a.Substring(a.IndexOf("=") + 1);
-            a = a.Substring(0, a.IndexOf(","));
-            DataGridSelectedID = int.Parse(a);
-        }
-
-        private void MenuCloseBtn_Click(object sender, RoutedEventArgs e)
-        {
-            Panelka.Visibility = Visibility.Collapsed;
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            OpenFileDialog openFileDialogLoad = new OpenFileDialog();
-
-            if (openFileDialogLoad.ShowDialog() == true)
             {
-                Logo.Source = new BitmapImage(new Uri(openFileDialogLoad.FileName));
+                DeleteBtn.IsEnabled = false;
+                GetBtn.IsEnabled = false;
+                PutBtn.IsEnabled = false;
+            }
+            else
+            {
+                DeleteBtn.IsEnabled = true;
+                GetBtn.IsEnabled = true;
+                PutBtn.IsEnabled = true;
             }
         }
 
-
+        private void GetMenuCloseBtn_Click(object sender, RoutedEventArgs e)
+        {
+            GetMenu.Visibility = Visibility.Collapsed;
+        }
     }
 }

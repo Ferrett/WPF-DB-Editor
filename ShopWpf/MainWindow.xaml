@@ -9,42 +9,38 @@
 
     <Grid Background="#FFE5E5E5">
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
             <ColumnDefinition Width="auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <Border x:Name="Panelka" Grid.Row="0" Grid.Column="1" BorderBrush="Black"  BorderThickness="2,0,0,0" Visibility="Visible">
-            <Grid  x:Name="Menu">
+        <Border x:Name="GetMenu" Grid.Column="0" BorderBrush="Black"  BorderThickness="0,0,2,0" Visibility="Collapsed">
+            <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"></RowDefinition>
                     <RowDefinition Height="auto"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
 
-                <StackPanel Grid.Row="0" x:Name="DeveloperMenu">
+                <StackPanel Grid.Row="0">
                     <Label HorizontalAlignment="Center" Content="Logo"></Label>
-                    <Image x:Name="Logo" Width="200" Stretch="UniformToFill" Height="auto" Margin="10,0,10,0" Source="C:\Users\admin\Desktop\Dummy.png"></Image>
-                    <Button  Width="auto" Margin="10,10,10,0" Height="30" Content="Open..." Click="Button_Click"></Button>
+                    <Grid>
+                        <Image x:Name="LogoDefault2" Width="200" Stretch="UniformToFill" Height="auto" Margin="10,0,10,0" Source="C:\Users\admin\Desktop\Dummy.png"></Image>
+                        <Image x:Name="GetLogo" Width="200" Stretch="UniformToFill" Height="auto" Margin="10,0,10,0"></Image>
+                    </Grid>
                     <Line X1="0" X2="220" Stroke="Black" Margin="0,20,0,0"></Line>
-                    <Label HorizontalAlignment="Center" Content="Developer name"></Label>
-                    <TextBox x:Name="DeveloperName"  Margin="10,0" Background="White"></TextBox>
-                </StackPanel>
-                
-                <StackPanel x:Name="ErrorLogPanel" Grid.Row="1" VerticalAlignment="Bottom" Visibility="Collapsed" >
-                    <Line X1="0" X2="220" Stroke="Black" Margin="0,10,0,10"></Line>
-                    <TextBlock TextAlignment="Center" x:Name="ErrorTextBlock" Background="White" Height="auto" MaxWidth="220" Margin="10,0" Visibility="Visible" TextWrapping="Wrap"></TextBlock>
+                    <Label HorizontalAlignment="Center" Content="Name"></Label>
+                    <TextBox x:Name="GetDeveloperName" IsReadOnly="True"  Margin="10,0" Background="White"></TextBox>
                 </StackPanel>
 
-                <StackPanel Grid.Row="2"  VerticalAlignment="Bottom">
+                <StackPanel Grid.Row="1"  VerticalAlignment="Bottom">
                     <Line X1="0" X2="220" Stroke="Black"></Line>
-                    <Button x:Name="MenuSubmitBtn"  Click="MenuSubmitBtn_Click" Width="auto" Height="30" Margin="10,10,10,10" Background="Lime" Content="Submit"></Button>
-                    <Button x:Name="MenuCloseBtn" Click="MenuCloseBtn_Click" Width="auto" Height="30" Margin="10,0,10,10" Background="Red" Content="Close"></Button>
+                    <Button x:Name="GetMenuCloseBtn" Click="GetMenuCloseBtn_Click" Width="auto" Height="30" Margin="10,10,10,10" Background="Red" Content="Close"></Button>
                 </StackPanel>
 
             </Grid>
         </Border>
 
-        <Grid Grid.Column="0" Grid.Row="0">
+        <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" ></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
@@ -65,25 +61,60 @@
                     </Grid>
 
                     <Grid>
-                        <DataGrid SelectedCellsChanged="DataGrid_SelectedCellsChanged" x:Name="DataGrid" MaxHeight="600" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" Visibility="Collapsed" ColumnWidth="*"/>
+                        <DataGrid x:Name="DataGrid" SelectionChanged="DataGrid_SelectionChanged" MaxHeight="600" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" Visibility="Collapsed" ColumnWidth="*"/>
                         <Label x:Name="ErrorText" VerticalAlignment="Top" HorizontalAlignment="Center" Content="Loading..."></Label>
                     </Grid>
                 </StackPanel>
             </Grid>
 
-            <Grid MinHeight="40" Margin="0,0,0,10" Grid.Column="0" Grid.Row="1">
+            <Grid x:Name="CRUDButtons" MinHeight="40" Margin="0,0,0,10" Grid.Column="0" Grid.Row="1" Visibility="Visible">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition></ColumnDefinition>
                     <ColumnDefinition></ColumnDefinition>
                     <ColumnDefinition></ColumnDefinition>
                     <ColumnDefinition></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Grid.Row="0" Width="200" Height="30" VerticalAlignment="Bottom" Background="Cyan" Content="Get"></Button>
-                <Button Grid.Column="1" Grid.Row="0" Width="200" Height="30" VerticalAlignment="Bottom" Background="Lime" Click="Post_Click" Content="Post"></Button>
-                <Button Grid.Column="2" Grid.Row="0" Width="200" Height="30" VerticalAlignment="Bottom" Background="Orange" Content="Put"></Button>
-                <Button Grid.Column="3" Grid.Row="0" Width="200" Height="30" VerticalAlignment="Bottom" Background="red" Click="Delete_Click" Content="Delete"></Button>
+                <Button x:Name="GetBtn" IsEnabled="False" Margin="10,0,10,0" Grid.Column="0" Grid.Row="0" Width="auto" Height="30" VerticalAlignment="Bottom" Background="Cyan" Click="Get_Click" Content="Get"></Button>
+                <Button x:Name="PostBtn" Margin="10,0,10,0" Grid.Column="1" Grid.Row="0" Width="auto" Height="30" VerticalAlignment="Bottom" Background="Lime" Click="Post_Click" Content="Post"></Button>
+                <Button x:Name="PutBtn" IsEnabled="False" Margin="10,0,10,0" Grid.Column="2" Grid.Row="0" Width="auto" Height="30" VerticalAlignment="Bottom" Background="Orange" Click="Put_Click" Content="Put"></Button>
+                <Button x:Name="DeleteBtn" IsEnabled="False" Margin="10,0,10,0" Grid.Column="3" Grid.Row="0" Width="auto" Height="30" VerticalAlignment="Bottom" Background="red" Click="Delete_Click" Content="Delete"></Button>
             </Grid>
         </Grid>
+
+        <Border x:Name="ItemMenu" Grid.Column="2" BorderBrush="Black"  BorderThickness="2,0,0,0" Visibility="Collapsed">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" x:Name="DeveloperMenu">
+                    <Label HorizontalAlignment="Center" Content="Logo"></Label>
+                    <Grid>
+                        <Image x:Name="LogoDefault" Width="200" Stretch="UniformToFill" Height="auto" Margin="10,0,10,0" Source="C:\Users\admin\Desktop\Dummy.png"></Image>
+                        <Image x:Name="Logo" Width="200" Stretch="UniformToFill" Height="auto" Margin="10,0,10,0"></Image>
+                    </Grid>
+                    <Button x:Name="SelectImageBtn" Width="auto" Margin="10,10,10,0" Height="30" Content="Open..." Click="Button_Click"></Button>
+                    <Line X1="0" X2="220" Stroke="Black" Margin="0,20,0,0"></Line>
+                    <Label HorizontalAlignment="Center" Content="Name"></Label>
+                    <TextBox x:Name="DeveloperName"  Margin="10,0" Background="White"></TextBox>
+                </StackPanel>
+
+                <StackPanel x:Name="ErrorLogPanel" Grid.Row="1" VerticalAlignment="Bottom" Visibility="Collapsed" >
+                    <Line X1="0" X2="220" Stroke="Black" Margin="0,10,0,10"></Line>
+                    <TextBlock TextAlignment="Center" x:Name="ErrorTextBlock" Background="White" Height="auto" MaxWidth="200" Margin="10,0" Visibility="Visible" TextWrapping="Wrap"></TextBlock>
+                </StackPanel>
+
+                <StackPanel Grid.Row="2"  VerticalAlignment="Bottom">
+                    <Line X1="0" X2="220" Stroke="Black"></Line>
+                    <Button x:Name="MenuSubmitBtn"  Click="MenuSubmitBtn_Click" Width="auto" Height="30" Margin="10,10,10,10" Background="Lime" Content="Submit"></Button>
+                    <Button x:Name="MenuCloseBtn" Click="MenuCloseBtn_Click" Width="auto" Height="30" Margin="10,0,10,10" Background="Red" Content="Close"></Button>
+                </StackPanel>
+
+            </Grid>
+        </Border>
+
     </Grid>
 
 
