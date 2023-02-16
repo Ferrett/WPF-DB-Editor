@@ -8,37 +8,37 @@ namespace ShopWpf
 {
     public static class Routes
     {
-        public static string GetRequest = "GetAll";
-        public static string GetByIDRequest = "Get";
+        public const string DefaultLogoName = "Dummy.png";
 
-        public static string DeleteRequest = "Delete";
-
-        public static string PostRequest = "Post";
+        public const string GetRequest = "GetAll";
+        public const string GetByIDRequest = "Get";
+        public const string DeleteRequest = "Delete";
+        public const string PostRequest = "Post";
 
         // Developer
-        public static string PutLogoRequest = "PutLogo";
-        public static string PutNameRequest = "PutName";
+        public const string PutLogoRequest = "PutLogo";
+        public const string PutNameRequest = "PutName";
 
         // Game;
-        public static string PutAchievementsCountRequest = "PutAchievementsCount";
-        public static string PutPriceRequest = "PutPrice";
+        public const string PutAchievementsCountRequest = "PutAchievementsCount";
+        public const string PutPriceRequest = "PutPrice";
 
         // Game stats
-        public static string PutGottenAchievementsRequest = "PutGottenAchievements";
-        public static string PutHoursPlayedRequest = "PutHoursPlayed";
-        public static string PutGameLaunchDateRequest = "PutGameLaunchDate";
+        public const string PutGottenAchievementsRequest = "PutGottenAchievements";
+        public const string PutHoursPlayedRequest = "PutHoursPlayed";
+        public const string PutGameLaunchDateRequest = "PutGameLaunchDate";
 
         // Review
-        public static string PutTextRequest = "PutText";
-        public static string PutApprovalRequest = "PutApproval";
+        public const string PutTextRequest = "PutText";
+        public const string PutApprovalRequest = "PutApproval";
 
         // User
-        public static string PutLoginRequest = "PutLogin";
-        public static string PutPasswordRequest = "PutPassword";
-        public static string PutNicknameRequest = "PutNickname";
-        public static string PutEmailRequest = "PutEmail";
-        public static string PutGameStatsRequest = "PutGameStats";
-        public static string PutMoneyOnAccountRequest = "PutMoneyOnAccount";
-        public static string PutAvatarRequest = "PutAvatar";
+        public const string PutLoginRequest = "PutLogin";
+        public const string PutPasswordRequest = "PutPassword";
+        public const string PutNicknameRequest = "PutNickname";
+        public const string PutEmailRequest = "PutEmail";
+        public const string PutGameStatsRequest = "PutGameStats";
+        public const string PutMoneyOnAccountRequest = "PutMoneyOnAccount";
+        public const string PutAvatarRequest = "PutAvatar";
     }
 }

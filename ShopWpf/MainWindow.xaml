@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ShopWpf"
+        xmlns:logic="clr-namespace:ShopWpf.Logic"
         mc:Ignorable="d"
         Title="Api Controller" MaxHeight="800" MinHeight="500"  SizeToContent="Height"  Width="1100">
 
@@ -14,7 +15,7 @@
             <ColumnDefinition Width="auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <Border x:Name="GetMenu" Grid.Column="0" BorderBrush="Black"  BorderThickness="0,0,2,0" Visibility="Collapsed">
+        <Border x:Name="GetMenu" Grid.Column="0" BorderBrush="Black"  BorderThickness="0,0,2,0" Visibility="Visible">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"></RowDefinition>
@@ -22,21 +23,36 @@
                 </Grid.RowDefinitions>
 
                 <StackPanel Grid.Row="0">
-                    <Label HorizontalAlignment="Center" Content="Logo"></Label>
-                    <Grid>
-                        <Image x:Name="LogoDefault2" Width="200" Stretch="UniformToFill" Height="auto" Margin="10,0,10,0" Source="C:\Users\admin\Desktop\Dummy.png"></Image>
-                        <Image x:Name="GetLogo" Width="200" Stretch="UniformToFill" Height="auto" Margin="10,0,10,0"></Image>
-                    </Grid>
-                    <Line X1="0" X2="220" Stroke="Black" Margin="0,20,0,0"></Line>
-                    <Label HorizontalAlignment="Center" Content="Name"></Label>
-                    <TextBox x:Name="GetDeveloperName" IsReadOnly="True"  Margin="10,0" Background="White"></TextBox>
-                </StackPanel>
+                    <StackPanel x:Name="GetLogoMenu" Visibility="Visible">
+                        <Label HorizontalAlignment="Center" Content="Logo"></Label>
+                        <Grid>
+                            <Image x:Name="LogoDefault2" Width="200" Stretch="UniformToFill" Height="auto" Margin="10,0,10,0" Source="C:\Users\admin\Desktop\Dummy.png"></Image>
+                            <Image x:Name="GetLogo" Width="200" Stretch="UniformToFill" Height="auto" Margin="10,0,10,0"></Image>
+                        </Grid>
+                        <Line X1="0" X2="220" Stroke="Black" Margin="0,20,0,0"></Line>
+                    </StackPanel>
 
+                    <StackPanel x:Name="GetDeveloperMenu">
+                        <Label HorizontalAlignment="Center" Content="Name"></Label>
+                        <TextBox x:Name="GetDeveloperName" IsReadOnly="True"  Margin="10,0" Background="White"></TextBox>
+                    </StackPanel>
+
+                    <StackPanel x:Name="GetGameMenu" Visibility="Collapsed">
+                        <Label HorizontalAlignment="Center" Content="Name"></Label>
+                        <TextBox x:Name="GetGameName" IsReadOnly="True" Margin="10,0" Background="White"></TextBox>
+                        <Label HorizontalAlignment="Center" Content="Price"></Label>
+                        <TextBox x:Name="GetGamePrice" IsReadOnly="True" Margin="10,0" Background="White"></TextBox>
+                        <Label HorizontalAlignment="Center" Content="Developer ID"></Label>
+                        <TextBox x:Name="GetGameDevID" IsReadOnly="True" Margin="10,0" Background="White"></TextBox>
+                        <Label HorizontalAlignment="Center" Content="Achievements Count (optional)"></Label>
+                        <TextBox x:Name="GetGameAchCount" IsReadOnly="True" Margin="10,0" Background="White"></TextBox>
+                    </StackPanel>
+                </StackPanel>
+                
                 <StackPanel Grid.Row="1"  VerticalAlignment="Bottom">
                     <Line X1="0" X2="220" Stroke="Black"></Line>
                     <Button x:Name="GetMenuCloseBtn" Click="GetMenuCloseBtn_Click" Width="auto" Height="30" Margin="10,10,10,10" Background="Red" Content="Close"></Button>
                 </StackPanel>
-
             </Grid>
         </Border>
 
@@ -50,11 +66,11 @@
                 <StackPanel>
                     <Grid Background="#FFE5E5E5">
                         <TabControl x:Name="TabControl" BorderThickness="0" SelectionChanged="TabControl_SelectionChanged">
-                            <TabItem Tag="Developer" Height="30" Padding="10,0,10,0" Header="Developers"></TabItem>
-                            <TabItem Tag="Game" Height="30" Padding="10,0,10,0" Header="Games"></TabItem>
-                            <TabItem Tag="GameStats" Height="30" Padding="10,0,10,0" Header="GamesStats"></TabItem>
-                            <TabItem Tag="Review" Height="30" Padding="10,0,10,0" Header="Reviews"></TabItem>
-                            <TabItem Tag="User" Height="30" Padding="10,0,10,0" Header="Users"></TabItem>
+                            <TabItem Tag="{Binding Source={x:Static logic:TableNames.Developer}}" Height="30" Padding="10,0,10,0" Header="Developers"></TabItem>
+                            <TabItem Tag="{Binding Source={x:Static logic:TableNames.Game}}" Height="30" Padding="10,0,10,0" Header="Games"></TabItem>
+                            <TabItem Tag="{Binding Source={x:Static logic:TableNames.GameStats}}" Height="30" Padding="10,0,10,0" Header="GamesStats"></TabItem>
+                            <TabItem Tag="{Binding Source={x:Static logic:TableNames.Review}}" Height="30" Padding="10,0,10,0" Header="Reviews"></TabItem>
+                            <TabItem Tag="{Binding Source={x:Static logic:TableNames.User}}" Height="30" Padding="10,0,10,0" Header="Users"></TabItem>
                         </TabControl>
 
                         <Button x:Name="RefreshBtn" Click="RefreshBtn_Click" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,0,0,0" Width="30" Height="30" Content="⭯"></Button>
@@ -81,7 +97,7 @@
             </Grid>
         </Grid>
 
-        <Border x:Name="ItemMenu" Grid.Column="2" BorderBrush="Black"  BorderThickness="2,0,0,0" Visibility="Collapsed">
+        <Border x:Name="ItemMenu" Grid.Column="2" BorderBrush="Black"  BorderThickness="2,0,0,0" Visibility="Visible" IsVisibleChanged="ItemMenu_IsVisibleChanged">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"></RowDefinition>
@@ -89,16 +105,33 @@
                     <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
 
-                <StackPanel Grid.Row="0" x:Name="DeveloperMenu">
-                    <Label HorizontalAlignment="Center" Content="Logo"></Label>
-                    <Grid>
-                        <Image x:Name="LogoDefault" Width="200" Stretch="UniformToFill" Height="auto" Margin="10,0,10,0" Source="C:\Users\admin\Desktop\Dummy.png"></Image>
-                        <Image x:Name="Logo" Width="200" Stretch="UniformToFill" Height="auto" Margin="10,0,10,0"></Image>
-                    </Grid>
-                    <Button x:Name="SelectImageBtn" Width="auto" Margin="10,10,10,0" Height="30" Content="Open..." Click="Button_Click"></Button>
-                    <Line X1="0" X2="220" Stroke="Black" Margin="0,20,0,0"></Line>
-                    <Label HorizontalAlignment="Center" Content="Name"></Label>
-                    <TextBox x:Name="DeveloperName"  Margin="10,0" Background="White"></TextBox>
+                <StackPanel Grid.Row="0">
+                    <StackPanel x:Name="LogoMenu" Visibility="Collapsed">
+                        <Label HorizontalAlignment="Center" Content="Logo"></Label>
+                        <Grid>
+                            <Image x:Name="LogoDefault" Width="200" Stretch="UniformToFill" Height="auto" Margin="10,0,10,0" Source="C:\Users\admin\Desktop\Dummy.png"></Image>
+                            <Image x:Name="Logo" Width="200" Stretch="UniformToFill" Height="auto" Margin="10,0,10,0"></Image>
+                        </Grid>
+                        <Button x:Name="SelectImageBtn" Width="auto" Margin="10,10,10,0" Height="30" Content="Open..." Click="Button_Click"></Button>
+                        <Line X1="0" X2="220" Stroke="Black" Margin="0,20,0,0"></Line>
+                    </StackPanel>
+
+                    <StackPanel x:Name="DeveloperMenu" Visibility="Visible">
+                        <Label HorizontalAlignment="Center" Content="Name"></Label>
+                        <TextBox x:Name="DeveloperName"  Margin="10,0" Background="White"></TextBox>
+                    </StackPanel>
+
+                    <StackPanel x:Name="GameMenu" Visibility="Collapsed">
+                        <Label HorizontalAlignment="Center" Content="Name"></Label>
+                        <TextBox x:Name="GameName"  Margin="10,0" Background="White"></TextBox>
+                        <Label HorizontalAlignment="Center" Content="Price"></Label>
+                        <TextBox x:Name="GamePrice"  Margin="10,0" Background="White"></TextBox>
+                        <Label HorizontalAlignment="Center" Content="Developer ID"></Label>
+                        <TextBox x:Name="GameDevID"  Margin="10,0" Background="White"></TextBox>
+                        <Label HorizontalAlignment="Center" Content="Achievements Count (optional)"></Label>
+                        <TextBox x:Name="GameAchCount"  Margin="10,0" Background="White"></TextBox>
+                    </StackPanel>
+
                 </StackPanel>
 
                 <StackPanel x:Name="ErrorLogPanel" Grid.Row="1" VerticalAlignment="Bottom" Visibility="Collapsed" >
@@ -107,7 +140,7 @@
                 </StackPanel>
 
                 <StackPanel Grid.Row="2"  VerticalAlignment="Bottom">
-                    <Line X1="0" X2="220" Stroke="Black"></Line>
+                    <Line X1="0" X2="220" Margin="0,10,0,0" Stroke="Black"></Line>
                     <Button x:Name="MenuSubmitBtn"  Click="MenuSubmitBtn_Click" Width="auto" Height="30" Margin="10,10,10,10" Background="Lime" Content="Submit"></Button>
                     <Button x:Name="MenuCloseBtn" Click="MenuCloseBtn_Click" Width="auto" Height="30" Margin="10,0,10,10" Background="Red" Content="Close"></Button>
                 </StackPanel>

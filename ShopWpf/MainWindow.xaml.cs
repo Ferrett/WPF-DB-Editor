@@ -7,9 +7,11 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Reflection.Metadata;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace ShopWpf
@@ -17,85 +19,126 @@ namespace ShopWpf
     public partial class MainWindow : Window
     {
         List<dynamic> Table = new List<dynamic>();
+        bool PostButtonPressed;
+        string selectedTableName = string.Empty;
 
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        private void Put_Click(object sender, RoutedEventArgs e)
+        private int DataGridSelectedID()
         {
-            post = false;
-            ItemMenu.Visibility = Visibility.Visible;
-            
+            if (DataGrid.SelectedIndex == -1)
+                return -1;
+
+            string id = DataGrid.SelectedValue.ToString()!;
+            id = id.Substring(id.IndexOf("=") + 1);
+            id = id.Substring(0, id.IndexOf(","));
+            return int.Parse(id);
         }
 
+        private void Put_Click(object sender, RoutedEventArgs e)
+        {
+            PostButtonPressed = false;
+            ItemMenu.Visibility = Visibility.Visible;
+            MenuSubmitBtn.Content = "Put";
+            MenuSubmitBtn.Background = new SolidColorBrush(Colors.Orange);
+            ShowDev(Logo, DeveloperName);
+        }
+
+        //   ЗАБИНДЬ ТЭГ К ЭНАМУ 
         private async void Put()
         {
-            Developer selectedDev = (Table[DataGrid.SelectedIndex] as Developer)!;
-
-            if (DevTest.IsFieldEmpty(selectedDev, DeveloperName.Text))
-            {
-                ShowRequestLog("Error: field is empty");
-                return;
-            }
-
-            if (DevTest.IsAnyChanges(selectedDev, Logo, DeveloperName.Text))
-            {
-                ShowRequestLog($"Error: No changes");
-                return;
-            }
-
             HideDataGrid();
+            Dictionary<string, string> content = new Dictionary<string, string>();
+            MultipartFormDataContent? multipartContent = null;
 
-            string reqContent = $"{DeveloperName.Text}";
-            //ShowRequestLog(await DevTest.PutReq(reqContent, Logo, DeveloperName.Text, (TabControl.SelectedItem as TabItem)!.Tag.ToString()!).Result);
-            await DevTest.PutReq(DataGrid, reqContent, Logo, DeveloperName.Text, (TabControl.SelectedItem as TabItem)!.Tag.ToString()!);
-            ShowRequestLog(DevTest.Result);
+            HttpResponseMessage requestResponse;
+            string responseMessage = string.Empty;
+
+            if (Logo.Source.ToString().Split('/').Last() != Routes.DefaultLogoName)
+            {
+                multipartContent = new MultipartFormDataContent();
+                multipartContent.Add(new ByteArrayContent(ImageToHttpContent(Logo)), "logo", "filename");
+            }
+
+            switch (selectedTableName)
+            {
+                case TableNames.Developer:
+                    {
+                        Developer selectedDev = (Table[DataGrid.SelectedIndex] as Developer)!;
+
+                        if (multipartContent != null)
+                            content.Add(Routes.PutLogoRequest, string.Empty);
+
+                        if (DeveloperName.Text != selectedDev.name)
+                            content.Add(Routes.PutNameRequest, DeveloperName.Text);
+
+                        break;
+                    }
+                default:
+                    break;
+            }
+
+            for (int i = 0; i < content.Count; i++)
+            {
+                if (content.ElementAt(i).Key == Routes.PutLogoRequest)
+                    requestResponse = await Requests.PutRequest(selectedTableName, content.ElementAt(i).Key, DataGridSelectedID(), null, multipartContent);
+                else
+                    requestResponse = await Requests.PutRequest(selectedTableName, content.ElementAt(i).Key, DataGridSelectedID(), content.ElementAt(i).Value);
+
+                if (requestResponse.StatusCode != HttpStatusCode.OK)
+                {
+                    responseMessage+= $"Error: {(int)requestResponse.StatusCode} ({requestResponse.StatusCode})\n{await requestResponse.Content.ReadAsStringAsync()}\n\n";
+                }
+            }
+
+            if (responseMessage == string.Empty)
+            {
+                ShowRequestLog("Data Updated successfuly");
+            }
+            else
+                ShowRequestLog(responseMessage);
+
             UpdateDataGrid();
         }
 
         private async void Post()
         {
-            if (String.IsNullOrEmpty(DeveloperName.Text))
-            {
-                ShowRequestLog("Error: Developer name is empty");
-
-                return;
-            }
-
             HideDataGrid();
+            MultipartFormDataContent multipartContent = null;
+            string content = string.Empty;
+            HttpResponseMessage response = new HttpResponseMessage();
 
-            string content = $"{DeveloperName.Text}";
-            MultipartFormDataContent? multipartContent = null;
-
-            HttpResponseMessage a;
-            if (Logo.Source == null)
-            {
-                a = await Requests.PostRequest((TabControl.SelectedItem as TabItem)!.Tag.ToString()!, content);
-            }
-            else
+            if (Logo.Source != null)
             {
                 multipartContent = new MultipartFormDataContent();
-                multipartContent.Add(new ByteArrayContent(Tools.ImageToHttpContent(Logo)), "logo", "filename");
-                a = await Requests.PostRequest((TabControl.SelectedItem as TabItem)!.Tag.ToString()!, content, multipartContent);
+                multipartContent.Add(new ByteArrayContent(ImageToHttpContent(Logo)), "logo", "filename");
             }
 
-            if (a.StatusCode != HttpStatusCode.OK)
+            switch (selectedTableName)
             {
-                ShowRequestLog($"Error: {(int)a.StatusCode} ({a.StatusCode})   |   {await a.Content.ReadAsStringAsync()}");
-                return;
+                case TableNames.Developer:
+                    {
+                        content = $"{DeveloperName.Text}";
+                        response = await Requests.PostRequest(selectedTableName, content, multipartContent);
+
+                        break;
+                    }
+                default:
+                    break;
             }
-            else
-            {
-                ShowRequestLog("Data Posted successfuy");
-            }
+            ShowRequestLog(response.StatusCode == HttpStatusCode.OK ? "Data Posted successfuly" :
+                            $"Error: {(int)response.StatusCode} ({response.StatusCode})\n{await response.Content.ReadAsStringAsync()}");
 
             UpdateDataGrid();
         }
-        private async void MenuSubmitBtn_Click(object sender, RoutedEventArgs e)
+
+        private void MenuSubmitBtn_Click(object sender, RoutedEventArgs e)
         {
-            if(post)
+            HideCRUDButtons();
+            if (PostButtonPressed)
             {
                 Post();
             }
@@ -105,11 +148,19 @@ namespace ShopWpf
             }
         }
 
-        bool post;
+        public void ClearFields()
+        {
+            Logo.Source = null;
+            DeveloperName.Text = null;
+        }
+
         private void Post_Click(object sender, RoutedEventArgs e)
         {
-            post= true;
+            PostButtonPressed = true;
             ItemMenu.Visibility = Visibility.Visible;
+            MenuSubmitBtn.Content = "Post";
+            MenuSubmitBtn.Background = new SolidColorBrush(Colors.Lime);
+            ClearFields();
         }
 
         private async void Delete_Click(object sender, RoutedEventArgs e)
@@ -118,10 +169,12 @@ namespace ShopWpf
                 return;
 
             HideDataGrid();
-            HttpResponseMessage a = await Requests.DeleteRequest((TabControl.SelectedItem as TabItem)!.Tag.ToString()!, Tools.DataGridSelectedID(DataGrid));
+            HideCRUDButtons();
+
+            HttpResponseMessage a = await Requests.DeleteRequest(selectedTableName, DataGridSelectedID());
             if (a.StatusCode != HttpStatusCode.OK)
             {
-                HideDataGrid($"Error: {(int)a.StatusCode} ({a.StatusCode})   |   {await a.Content.ReadAsStringAsync()}");
+                HideDataGrid($"Error: {(int)a.StatusCode} ({a.StatusCode})\n{await a.Content.ReadAsStringAsync()}");
                 return;
             }
             UpdateDataGrid();
@@ -129,9 +182,38 @@ namespace ShopWpf
 
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            CollapseAllGrids();
+            selectedTableName = (TabControl.SelectedItem as TabItem)!.Tag.ToString()!;
+            switch (selectedTableName)
+            {
+                case TableNames.Developer:
+                    {
+                        CollapseAllGrids();
+                        LogoMenu.Visibility = Visibility.Visible;
+                        DeveloperMenu.Visibility = Visibility.Visible;
+                        break;
+                    }
+                case TableNames.Game:
+                    {
+                        CollapseAllGrids();
+                        LogoMenu.Visibility = Visibility.Visible;
+                        GameMenu.Visibility = Visibility.Visible;
+                        break;
+                    }
+
+                default:
+                    break;
+            }
+            UpdateDataGrid();
+        }
+
+        private void CollapseAllGrids()
+        {
             ItemMenu.Visibility = Visibility.Collapsed;
             GetMenu.Visibility = Visibility.Collapsed;
-            UpdateDataGrid();
+            LogoMenu.Visibility = Visibility.Collapsed;
+            DeveloperMenu.Visibility = Visibility.Collapsed;
+            GameMenu.Visibility= Visibility.Collapsed;
         }
 
         private void MenuCloseBtn_Click(object sender, RoutedEventArgs e)
@@ -145,28 +227,46 @@ namespace ShopWpf
 
             if (openFileDialogLoad.ShowDialog() == true)
             {
-                LogoDefault.Source = null;
                 Logo.Source = new BitmapImage(new Uri(openFileDialogLoad.FileName));
+                //LogoDefault.Height = Logo.Height;
             }
+        }
+
+        public byte[] ImageToHttpContent(Image img)
+        {
+            byte[] data;
+            JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(img.Source as BitmapImage));
+            using (MemoryStream ms = new MemoryStream())
+            {
+                encoder.Save(ms);
+                data = ms.ToArray();
+            }
+
+            return data;
+        }
+
+        public void ShowDev(Image logo, TextBox name)
+        {
+            Developer selectedDev = (Table[DataGrid.SelectedIndex] as Developer)!;
+            var fullFilePath = selectedDev.logoURL;
+
+            BitmapImage bitmap = new BitmapImage();
+            bitmap.BeginInit();
+            bitmap.UriSource = new Uri(fullFilePath, UriKind.Absolute);
+            bitmap.EndInit();
+
+            logo.Source = bitmap;
+            name.Text = selectedDev.name;
         }
 
         private void Get_Click(object sender, RoutedEventArgs e)
         {
-            switch ((TabControl.SelectedItem as TabItem)!.Tag.ToString()!)
+            switch (selectedTableName)
             {
-                case "Developer":
+                case TableNames.Developer:
                     {
-                        Developer selectedDev = (Table[DataGrid.SelectedIndex] as Developer)!;
-
-                        var fullFilePath = selectedDev.logoURL;
-
-                        BitmapImage bitmap = new BitmapImage();
-                        bitmap.BeginInit();
-                        bitmap.UriSource = new Uri(fullFilePath, UriKind.Absolute);
-                        bitmap.EndInit();
-
-                        GetLogo.Source = bitmap;
-                        GetDeveloperName.Text = selectedDev.name;
+                        ShowDev(GetLogo, GetDeveloperName);
                         break;
                     }
 
@@ -177,27 +277,28 @@ namespace ShopWpf
             GetMenu.Visibility = Visibility.Visible;
         }
 
+
         private void StoreDataInTable(string content)
         {
-            switch ((TabControl.SelectedItem as TabItem)!.Tag.ToString()!)
+            switch (selectedTableName)
             {
-                case "Developer":
+                case TableNames.Developer:
                     Table.AddRange(JsonSerializer.Deserialize<List<Developer>>(content)!);
                     break;
 
-                case "Game":
+                case TableNames.Game:
                     Table.AddRange(JsonSerializer.Deserialize<List<Game>>(content)!);
                     break;
 
-                case "GameStats":
+                case TableNames.GameStats:
                     Table.AddRange(JsonSerializer.Deserialize<List<GameStats>>(content)!);
                     break;
 
-                case "Review":
+                case TableNames.Review:
                     Table.AddRange(JsonSerializer.Deserialize<List<Review>>(content)!);
                     break;
 
-                case "User":
+                case TableNames.User:
                     Table.AddRange(JsonSerializer.Deserialize<List<User>>(content)!);
                     break;
 
@@ -206,29 +307,26 @@ namespace ShopWpf
             }
         }
 
-
-
-        
-
         private async void UpdateDataGrid()
         {
             HideDataGrid();
+            HideCRUDButtons();
 
             DataGrid.ItemsSource = null;
 
             Table = new List<dynamic>();
-            HttpResponseMessage a = await Requests.GetRequest((TabControl.SelectedItem as TabItem)!.Tag.ToString()!);
+            HttpResponseMessage a = await Requests.GetRequest(selectedTableName);
 
+            ShowCRUDButtons();
             if (a.StatusCode != HttpStatusCode.OK)
             {
-                HideDataGrid($"Error: {(int)a.StatusCode} ({a.StatusCode})   |   {await a.Content.ReadAsStringAsync()}");
+                HideDataGrid($"Error: {(int)a.StatusCode} ({a.StatusCode})\n{await a.Content.ReadAsStringAsync()}");
                 return;
             }
             StoreDataInTable(a.Content.ReadAsStringAsync().Result);
             DataGrid.ItemsSource = Table;
 
             ShowDataGrid();
-            UpdateCRUDButtons();
         }
 
         private void ShowDataGrid()
@@ -246,11 +344,9 @@ namespace ShopWpf
 
         private void HideDataGrid(string errorText = "Loading...")
         {
-            CRUDButtons.Visibility = Visibility.Hidden;
-            RefreshBtn.Visibility = Visibility.Hidden;
             DataGrid.Visibility = Visibility.Collapsed;
             ErrorText.Visibility = Visibility.Visible;
-            MenuSubmitBtn.IsEnabled = false;
+
             ErrorText.Content = errorText;
         }
 
@@ -258,11 +354,17 @@ namespace ShopWpf
         {
             UpdateDataGrid();
         }
-
-        private void UpdateCRUDButtons()
+        private void HideCRUDButtons()
+        {
+            CRUDButtons.Visibility = Visibility.Hidden;
+            RefreshBtn.Visibility = Visibility.Hidden;
+            MenuSubmitBtn.IsEnabled = false;
+        }
+        private void ShowCRUDButtons()
         {
             CRUDButtons.Visibility = Visibility.Visible;
             RefreshBtn.Visibility = Visibility.Visible;
+            MenuSubmitBtn.IsEnabled = true;
         }
 
         private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -284,6 +386,15 @@ namespace ShopWpf
         private void GetMenuCloseBtn_Click(object sender, RoutedEventArgs e)
         {
             GetMenu.Visibility = Visibility.Collapsed;
+        }
+
+        private void ItemMenu_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if ((sender as Border)!.Visibility == Visibility.Collapsed)
+            {
+                ErrorLogPanel.Visibility = Visibility.Collapsed;
+                ErrorTextBlock.Text = string.Empty;
+            }
         }
     }
 }
