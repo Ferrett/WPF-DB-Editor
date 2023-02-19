@@ -26,7 +26,7 @@ namespace ShopWpf
         // Game stats
         public const string PutGottenAchievementsRequest = "PutGottenAchievements";
         public const string PutHoursPlayedRequest = "PutHoursPlayed";
-        public const string PutGameLaunchDateRequest = "PutGameLaunchDate";
+        public const string PutGameLaunchedRequest = "PutGameLaunched";
 
         // Review
         public const string PutTextRequest = "PutText";
@@ -37,8 +37,6 @@ namespace ShopWpf
         public const string PutPasswordRequest = "PutPassword";
         public const string PutNicknameRequest = "PutNickname";
         public const string PutEmailRequest = "PutEmail";
-        public const string PutGameStatsRequest = "PutGameStats";
         public const string PutMoneyOnAccountRequest = "PutMoneyOnAccount";
-        public const string PutAvatarRequest = "PutAvatar";
     }
 }

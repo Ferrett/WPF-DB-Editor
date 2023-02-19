@@ -29,18 +29,18 @@ namespace ShopWpf.Logic
             return response;
         }
 
-        public static async Task<HttpResponseMessage> PostRequest(string tableName, string content, HttpContent? optionlaParameters = null)
+        public static async Task<HttpResponseMessage> PostRequest(string tableName, string content, HttpContent? multipartContent = null)
         {
             HttpClient client = new HttpClient();
-            HttpResponseMessage response = await client.PostAsync($"{APIurl}/{tableName}/{Routes.PostRequest}/{content}", optionlaParameters);
+            HttpResponseMessage response = await client.PostAsync($"{APIurl}/{tableName}/{Routes.PostRequest}/{content}", multipartContent);
             
             return response;
         }
 
-        public static async Task<HttpResponseMessage> PutRequest(string tableName, string putRequestName, int ID, string? content = null,  HttpContent? optionlaParameters = null)
+        public static async Task<HttpResponseMessage> PutRequest(string tableName, string putRequestName, int ID, string? content = null,  HttpContent? multipartContent = null)
         {
             HttpClient client = new HttpClient();
-            HttpResponseMessage response = await client.PutAsync($"{APIurl}/{tableName}/{putRequestName}/{ID}/{content}", optionlaParameters);
+            HttpResponseMessage response = await client.PutAsync($"{APIurl}/{tableName}/{putRequestName}/{ID}/{content}", multipartContent);
 
             return response;
         }

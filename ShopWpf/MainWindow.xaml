@@ -15,43 +15,93 @@
             <ColumnDefinition Width="auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <Border x:Name="GetMenu" Grid.Column="0" BorderBrush="Black"  BorderThickness="0,0,2,0" Visibility="Visible">
+        <Border x:Name="ItemMenuGet" MaxWidth="222" Grid.Column="0" BorderBrush="Black"  BorderThickness="0,0,2,0" Visibility="Collapsed">
             <Grid>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"></RowDefinition>
                     <RowDefinition Height="auto"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
 
-                <StackPanel Grid.Row="0">
-                    <StackPanel x:Name="GetLogoMenu" Visibility="Visible">
+                <StackPanel x:Name="ItemIDMenuGet" Grid.Row="0" Visibility="Collapsed">
+                    <Label HorizontalAlignment="Center" Content="ID"></Label>
+                    <TextBox x:Name="ItemIDGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
+                    <Line X1="0" X2="220" Stroke="Black" Margin="0,20,0,0"></Line>
+                </StackPanel>
+
+
+                <StackPanel Grid.Row="1">
+                    <StackPanel x:Name="LogoMenuGet" Visibility="Visible">
                         <Label HorizontalAlignment="Center" Content="Logo"></Label>
                         <Grid>
-                            <Image x:Name="LogoDefault2" Width="200" Stretch="UniformToFill" Height="auto" Margin="10,0,10,0" Source="C:\Users\admin\Desktop\Dummy.png"></Image>
-                            <Image x:Name="GetLogo" Width="200" Stretch="UniformToFill" Height="auto" Margin="10,0,10,0"></Image>
+                            <Image x:Name="LogoDefaultGet"  Stretch="UniformToFill" Height="auto" Margin="10,0,10,0" Source="C:\Users\admin\Desktop\Dummy.png"></Image>
+                            <Image x:Name="LogoGet"  Stretch="UniformToFill" Height="auto" Margin="10,0,10,0"></Image>
                         </Grid>
                         <Line X1="0" X2="220" Stroke="Black" Margin="0,20,0,0"></Line>
                     </StackPanel>
 
-                    <StackPanel x:Name="GetDeveloperMenu">
+                    <StackPanel x:Name="DeveloperMenuGet" Visibility="Collapsed">
                         <Label HorizontalAlignment="Center" Content="Name"></Label>
-                        <TextBox x:Name="GetDeveloperName" IsReadOnly="True"  Margin="10,0" Background="White"></TextBox>
+                        <TextBox x:Name="DeveloperNameGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
+                        <Label HorizontalAlignment="Center" Content="RegistrationDate"></Label>
+                        <TextBox x:Name="DeveloperRegistrationDateGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
                     </StackPanel>
 
-                    <StackPanel x:Name="GetGameMenu" Visibility="Collapsed">
-                        <Label HorizontalAlignment="Center" Content="Name"></Label>
-                        <TextBox x:Name="GetGameName" IsReadOnly="True" Margin="10,0" Background="White"></TextBox>
-                        <Label HorizontalAlignment="Center" Content="Price"></Label>
-                        <TextBox x:Name="GetGamePrice" IsReadOnly="True" Margin="10,0" Background="White"></TextBox>
+                    <StackPanel x:Name="GameMenuGet" Visibility="Collapsed">
                         <Label HorizontalAlignment="Center" Content="Developer ID"></Label>
-                        <TextBox x:Name="GetGameDevID" IsReadOnly="True" Margin="10,0" Background="White"></TextBox>
-                        <Label HorizontalAlignment="Center" Content="Achievements Count (optional)"></Label>
-                        <TextBox x:Name="GetGameAchCount" IsReadOnly="True" Margin="10,0" Background="White"></TextBox>
+                        <TextBox x:Name="GameDevIDGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
+                        <Label HorizontalAlignment="Center" Content="Name"></Label>
+                        <TextBox x:Name="GameNameGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
+                        <Label HorizontalAlignment="Center" Content="Price"></Label>
+                        <TextBox x:Name="GamePriceGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
+                        <Label HorizontalAlignment="Center" Content="Achievements Count"></Label>
+                        <TextBox x:Name="GameAchCountGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
+                        <Label HorizontalAlignment="Center" Content="PublishDate"></Label>
+                        <TextBox x:Name="GamePublishDateGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
+                    </StackPanel>
+
+                    <StackPanel x:Name="GameStatsMenuGet" Visibility="Collapsed">
+                        <Label HorizontalAlignment="Center" Content="User ID"></Label>
+                        <TextBox x:Name="GameStatsUserIDGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
+                        <Label HorizontalAlignment="Center" Content="Game ID"></Label>
+                        <TextBox x:Name="GameStatsGameIDGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
+                        <Label HorizontalAlignment="Center" Content="Gotten Achievements"></Label>
+                        <TextBox x:Name="GameStatsGottenAchievementsGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
+                        <Label HorizontalAlignment="Center" Content="Hours Played"></Label>
+                        <TextBox x:Name="GameStatsHoursPlayedGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
+                    </StackPanel>
+
+                    <StackPanel x:Name="ReviewMenuGet" Visibility="Collapsed">
+                        <Label HorizontalAlignment="Center" Content="Game ID"></Label>
+                        <TextBox x:Name="ReviewGameIDGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
+                        <Label HorizontalAlignment="Center" Content="User ID"></Label>
+                        <TextBox x:Name="ReviewUserIDGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
+                        <CheckBox x:Name="ReviewIsPositiveGet" HorizontalAlignment="Center"  Margin="0,10" Content="Is Positive" IsHitTestVisible="False" Focusable="False"></CheckBox>
+                        <Label HorizontalAlignment="Center" Content="Text"></Label>
+                        <TextBox x:Name="ReviewTextGet"  Margin="10,0" Background="White" TextWrapping="Wrap"  IsReadOnly="True"></TextBox>
+                        <Label HorizontalAlignment="Center" Content="Creation Date"></Label>
+                        <TextBox x:Name="ReviewCreationDateGet"  Margin="10,0" Background="White" TextWrapping="Wrap"  IsReadOnly="True"></TextBox>
+                        <Label HorizontalAlignment="Center" Content="Last Edit Date"></Label>
+                        <TextBox x:Name="ReviewLastEditDateGet"  Margin="10,0" Background="White" TextWrapping="Wrap"  IsReadOnly="True"></TextBox>
+                    </StackPanel>
+
+                    <StackPanel x:Name="UserMenuGet" Visibility="Collapsed">
+                        <Label HorizontalAlignment="Center" Content="Login"></Label>
+                        <TextBox x:Name="UserLoginGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
+                        <Label HorizontalAlignment="Center" Content="Password"></Label>
+                        <TextBox x:Name="UserPasswordGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
+                        <Label HorizontalAlignment="Center" Content="Nickname"></Label>
+                        <TextBox x:Name="UserNicknameGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
+                        <Label HorizontalAlignment="Center" Content="Email"></Label>
+                        <TextBox x:Name="UserEmailGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
+                        <Label HorizontalAlignment="Center" Content="Creation Date"></Label>
+                        <TextBox x:Name="UserCreationDateGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
                     </StackPanel>
                 </StackPanel>
-                
-                <StackPanel Grid.Row="1"  VerticalAlignment="Bottom">
-                    <Line X1="0" X2="220" Stroke="Black"></Line>
-                    <Button x:Name="GetMenuCloseBtn" Click="GetMenuCloseBtn_Click" Width="auto" Height="30" Margin="10,10,10,10" Background="Red" Content="Close"></Button>
+
+                <StackPanel Grid.Row="2"  VerticalAlignment="Bottom">
+                    <Line X1="0" X2="220" Margin="0,10,0,0" Stroke="Black"></Line>
+                    <Button x:Name="GetMenuCloseBtn" Click="GetMenuCloseBtn_Click" Height="30" Margin="10,10,10,10" Background="Red" Content="Close"></Button>
                 </StackPanel>
             </Grid>
         </Border>
@@ -97,52 +147,107 @@
             </Grid>
         </Grid>
 
-        <Border x:Name="ItemMenu" Grid.Column="2" BorderBrush="Black"  BorderThickness="2,0,0,0" Visibility="Visible" IsVisibleChanged="ItemMenu_IsVisibleChanged">
+        <Border x:Name="ItemMenu" Grid.Column="2" BorderBrush="Black" MaxWidth="222"  BorderThickness="2,0,0,0" Visibility="Collapsed" IsVisibleChanged="ItemMenu_IsVisibleChanged">
             <Grid>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"></RowDefinition>
                     <RowDefinition Height="auto"></RowDefinition>
                     <RowDefinition Height="auto"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
 
-                <StackPanel Grid.Row="0">
+                <StackPanel x:Name="ItemIDMenu" Grid.Row="0" Visibility="Collapsed">
+                    <Label HorizontalAlignment="Center" Content="ID"></Label>
+                    <TextBox x:Name="ItemID"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
+                    <Line X1="0" X2="220" Stroke="Black" Margin="0,20,0,0"></Line>
+                </StackPanel>
+
+                <StackPanel Grid.Row="1">
                     <StackPanel x:Name="LogoMenu" Visibility="Collapsed">
                         <Label HorizontalAlignment="Center" Content="Logo"></Label>
                         <Grid>
-                            <Image x:Name="LogoDefault" Width="200" Stretch="UniformToFill" Height="auto" Margin="10,0,10,0" Source="C:\Users\admin\Desktop\Dummy.png"></Image>
-                            <Image x:Name="Logo" Width="200" Stretch="UniformToFill" Height="auto" Margin="10,0,10,0"></Image>
+                            <Image x:Name="LogoDefault" Stretch="UniformToFill" Height="auto" Margin="10,0,10,0" Source="C:\Users\admin\Desktop\Dummy.png"></Image>
+                            <Image x:Name="Logo" Stretch="UniformToFill" Height="auto" Margin="10,0,10,0"></Image>
                         </Grid>
-                        <Button x:Name="SelectImageBtn" Width="auto" Margin="10,10,10,0" Height="30" Content="Open..." Click="Button_Click"></Button>
+                        <Button x:Name="SelectImageBtn" Margin="10,10,10,0" Height="30" Content="Open..." Click="Button_Click"></Button>
                         <Line X1="0" X2="220" Stroke="Black" Margin="0,20,0,0"></Line>
                     </StackPanel>
 
-                    <StackPanel x:Name="DeveloperMenu" Visibility="Visible">
+                    <StackPanel x:Name="DeveloperMenu" Visibility="Collapsed">
                         <Label HorizontalAlignment="Center" Content="Name"></Label>
                         <TextBox x:Name="DeveloperName"  Margin="10,0" Background="White"></TextBox>
                     </StackPanel>
 
-                    <StackPanel x:Name="GameMenu" Visibility="Collapsed">
-                        <Label HorizontalAlignment="Center" Content="Name"></Label>
-                        <TextBox x:Name="GameName"  Margin="10,0" Background="White"></TextBox>
-                        <Label HorizontalAlignment="Center" Content="Price"></Label>
-                        <TextBox x:Name="GamePrice"  Margin="10,0" Background="White"></TextBox>
-                        <Label HorizontalAlignment="Center" Content="Developer ID"></Label>
-                        <TextBox x:Name="GameDevID"  Margin="10,0" Background="White"></TextBox>
-                        <Label HorizontalAlignment="Center" Content="Achievements Count (optional)"></Label>
-                        <TextBox x:Name="GameAchCount"  Margin="10,0" Background="White"></TextBox>
+                    <StackPanel>
+                        <StackPanel x:Name="PostGameMenu" Visibility="Collapsed">
+                            <Label HorizontalAlignment="Center" Content="Developer ID"></Label>
+                            <TextBox x:Name="GameDevID"  Margin="10,0" Background="White"></TextBox>
+                        </StackPanel>
+
+                        <StackPanel x:Name="PutGameMenu" Visibility="Collapsed">
+                            <Label HorizontalAlignment="Center" Content="Name"></Label>
+                            <TextBox x:Name="GameName"  Margin="10,0" Background="White"></TextBox>
+                            <Label HorizontalAlignment="Center" Content="Price"></Label>
+                            <TextBox x:Name="GamePrice"  Margin="10,0" Background="White"></TextBox>
+                            <Label HorizontalAlignment="Center" Content="Achievements Count (optional)"></Label>
+                            <TextBox x:Name="GameAchCount"  Margin="10,0" Background="White"></TextBox>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel>
+                        <StackPanel x:Name="PostGameStatsMenu" Visibility="Collapsed">
+                            <Label HorizontalAlignment="Center" Content="User ID"></Label>
+                            <TextBox x:Name="GameStatsUserID"  Margin="10,0" Background="White"></TextBox>
+                            <Label HorizontalAlignment="Center" Content="Game ID"></Label>
+                            <TextBox x:Name="GameStatsGameID"  Margin="10,0" Background="White"></TextBox>
+                        </StackPanel>
+
+                        <StackPanel x:Name="PutGameStatsMenu" Visibility="Collapsed">
+                            <CheckBox x:Name="GameStatsIsGameLaunched" HorizontalAlignment="Center"  Margin="0,10" Content="Is Game Launched"></CheckBox>
+                            <Label HorizontalAlignment="Center" Content="Gotten Achievements"></Label>
+                            <TextBox x:Name="GameStatsGottenAchievements"  Margin="10,0" Background="White"></TextBox>
+                            <Label HorizontalAlignment="Center" Content="Hours Played"></Label>
+                            <TextBox x:Name="GameStatsHoursPlayed"  Margin="10,0" Background="White"></TextBox>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel>
+                        <StackPanel x:Name="PostReviewMenu" Visibility="Collapsed">
+                            <Label HorizontalAlignment="Center" Content="Game ID"></Label>
+                            <TextBox x:Name="ReviewGameID"  Margin="10,0" Background="White"></TextBox>
+                            <Label HorizontalAlignment="Center" Content="User ID"></Label>
+                            <TextBox x:Name="ReviewUserID"  Margin="10,0" Background="White"></TextBox>
+
+                        </StackPanel>
+                        <StackPanel x:Name="PutReviewMenu" Visibility="Collapsed">
+                            <CheckBox x:Name="ReviewIsPositive" HorizontalAlignment="Center"  Margin="0,10" Content="Is Positive"></CheckBox>
+                            <Label HorizontalAlignment="Center" Content="Text (optional)"></Label>
+                            <TextBox x:Name="ReviewText"  Margin="10,0" Background="White" TextWrapping="Wrap"></TextBox>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel x:Name="UserMenu" Visibility="Collapsed">
+                        <Label HorizontalAlignment="Center" Content="Login"></Label>
+                        <TextBox x:Name="UserLogin"  Margin="10,0" Background="White"></TextBox>
+                        <Label HorizontalAlignment="Center" Content="Password"></Label>
+                        <TextBox x:Name="UserPassword"  Margin="10,0" Background="White"></TextBox>
+                        <Label HorizontalAlignment="Center" Content="Nickname"></Label>
+                        <TextBox x:Name="UserNickname"  Margin="10,0" Background="White"></TextBox>
+                        <Label HorizontalAlignment="Center" Content="Email (optional)"></Label>
+                        <TextBox x:Name="UserEmail"  Margin="10,0" Background="White"></TextBox>
                     </StackPanel>
 
                 </StackPanel>
 
-                <StackPanel x:Name="ErrorLogPanel" Grid.Row="1" VerticalAlignment="Bottom" Visibility="Collapsed" >
+                <StackPanel x:Name="ErrorLogPanel" Grid.Row="2" VerticalAlignment="Bottom" Visibility="Collapsed">
                     <Line X1="0" X2="220" Stroke="Black" Margin="0,10,0,10"></Line>
-                    <TextBlock TextAlignment="Center" x:Name="ErrorTextBlock" Background="White" Height="auto" MaxWidth="200" Margin="10,0" Visibility="Visible" TextWrapping="Wrap"></TextBlock>
+                    <TextBlock TextAlignment="Center" x:Name="ErrorTextBlock" Background="White" Height="auto" Margin="10,0" Visibility="Visible" TextWrapping="Wrap"></TextBlock>
                 </StackPanel>
 
-                <StackPanel Grid.Row="2"  VerticalAlignment="Bottom">
+                <StackPanel Grid.Row="3"  VerticalAlignment="Bottom">
                     <Line X1="0" X2="220" Margin="0,10,0,0" Stroke="Black"></Line>
-                    <Button x:Name="MenuSubmitBtn"  Click="MenuSubmitBtn_Click" Width="auto" Height="30" Margin="10,10,10,10" Background="Lime" Content="Submit"></Button>
-                    <Button x:Name="MenuCloseBtn" Click="MenuCloseBtn_Click" Width="auto" Height="30" Margin="10,0,10,10" Background="Red" Content="Close"></Button>
+                    <Button x:Name="MenuSubmitBtn"  Click="MenuSubmitBtn_Click" Height="30" Margin="10,10,10,10" Background="Lime" Content="Submit"></Button>
+                    <Button x:Name="MenuCloseBtn" Click="MenuCloseBtn_Click" Height="30" Margin="10,0,10,10" Background="Red" Content="Close"></Button>
                 </StackPanel>
 
             </Grid>

@@ -19,10 +19,6 @@ namespace ShopWpf.Models
 
         public string? email { get; set; }
 
-        public float moneyOnAccount { get; set; }
-
         public DateTime creationDate { get; set; }
-
-        public DateTime lastLogInDate { get; set; }
     }
 }
