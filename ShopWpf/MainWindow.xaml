@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ShopWpf"
         xmlns:logic="clr-namespace:ShopWpf.Logic"
+        xmlns:MVVM="clr-namespace:ShopWpf.ViewModel"
         mc:Ignorable="d"
         Title="Api Controller" MaxHeight="800" MinHeight="500"  SizeToContent="Height"  Width="1100">
 
@@ -253,7 +254,15 @@
             </Grid>
         </Border>
 
+        <DataGrid ItemsSource="{Binding Developers, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"  AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Path=id, Mode=TwoWay}"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding Path=name, Mode=TwoWay}"/>
+                <DataGridTextColumn Header="LogoURL" Binding="{Binding Path=logoURL, Mode=TwoWay}"/>
+                <DataGridTextColumn Header="RegistrationDate" Binding="{Binding Path=registrationDate, Mode=TwoWay}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Button Width="50" Height="50" Command=""></Button>
     </Grid>
-
 
 </Window>

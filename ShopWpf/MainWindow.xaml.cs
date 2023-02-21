@@ -1,14 +1,17 @@
 ﻿using Microsoft.Win32;
 using ShopWpf.Logic;
 using ShopWpf.Models;
+using ShopWpf.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Reflection.Metadata;
 using System.Text.Json;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -18,6 +21,7 @@ namespace ShopWpf
 {
     public partial class MainWindow : Window
     {
+
         List<dynamic> Table = new List<dynamic>();
         bool PostButtonPressed;
         string selectedTableName = string.Empty;
@@ -25,6 +29,8 @@ namespace ShopWpf
         public MainWindow()
         {
             InitializeComponent();
+
+            DataContext = new DeveloperViewModel();
         }
 
         private async void Put()
@@ -333,9 +339,9 @@ namespace ShopWpf
 
         private void Get_Click(object sender, RoutedEventArgs e)
         {
-           ItemMenuGet.Visibility = Visibility.Visible;
-           ItemIDMenuGet.Visibility = Visibility.Visible;
-           ShowTableItem(true);
+            ItemMenuGet.Visibility = Visibility.Visible;
+            ItemIDMenuGet.Visibility = Visibility.Visible;
+            ShowTableItem(true);
         }
 
         private void RefreshBtn_Click(object sender, RoutedEventArgs e)
@@ -474,16 +480,6 @@ namespace ShopWpf
         {
             ItemMenu.Visibility = Visibility.Collapsed;
             ItemMenuGet.Visibility = Visibility.Collapsed;
-            //LogoMenu.Visibility = Visibility.Collapsed;
-
-            //DeveloperMenu.Visibility = Visibility.Collapsed;
-            //PostGameMenu.Visibility = Visibility.Collapsed;
-            //PutGameMenu.Visibility = Visibility.Collapsed;
-            //PostGameStatsMenu.Visibility = Visibility.Collapsed;
-            //PutGameStatsMenu.Visibility = Visibility.Collapsed;
-            //PostReviewMenu.Visibility = Visibility.Collapsed;
-            //PutReviewMenu.Visibility = Visibility.Collapsed;
-            //UserMenu.Visibility = Visibility.Collapsed;
         }
 
         private int DataGridSelectedID()
@@ -530,11 +526,11 @@ namespace ShopWpf
                         Developer selectedDev = (Table[DataGrid.SelectedIndex] as Developer)!;
                         if (getClicked)
                         {
-                            DeveloperMenuGet.Visibility=Visibility.Visible;
+                            DeveloperMenuGet.Visibility = Visibility.Visible;
                             LogoGet.Source = LogoUrlToBitmapImage(selectedDev.logoURL);
                             ItemIDGet.Text = selectedDev.id.ToString();
                             DeveloperNameGet.Text = selectedDev.name;
-                            DeveloperRegistrationDateGet.Text=selectedDev.registrationDate.ToString();
+                            DeveloperRegistrationDateGet.Text = selectedDev.registrationDate.ToString();
                         }
                         else
                         {
