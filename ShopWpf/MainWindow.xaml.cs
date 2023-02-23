@@ -30,7 +30,7 @@ namespace ShopWpf
         {
             InitializeComponent();
 
-            DataContext = new DeveloperViewModel();
+            DataContext = new ApplicationViewModel();
         }
 
         private async void Put()

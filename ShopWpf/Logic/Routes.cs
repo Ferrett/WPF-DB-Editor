@@ -8,6 +8,7 @@ namespace ShopWpf
 {
     public static class Routes
     {
+        public const string APIurl = @"https://xhvlop3q7v55snb2tvjh7dt57a0jswko.lambda-url.eu-north-1.on.aws";
         public const string DefaultLogoName = "Dummy.png";
 
         public const string GetRequest = "GetAll";
