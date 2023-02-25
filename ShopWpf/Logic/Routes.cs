@@ -19,6 +19,9 @@ namespace ShopWpf
         // Developer
         public const string PutLogoRequest = "PutLogo";
         public const string PutNameRequest = "PutName";
+        public const string PutDeveloperRequest = "PutDeveloper";
+        public const string PutUserRequest = "PutUser";
+        public const string PutGameRequest = "PutGame";
 
         // Game;
         public const string PutAchievementsCountRequest = "PutAchievementsCount";
