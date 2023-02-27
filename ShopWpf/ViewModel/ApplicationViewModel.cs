@@ -25,6 +25,7 @@ namespace ShopWpf.ViewModel
         private Visibility _dataGridVisibility;
         private string _errorText;
         private Visibility _errorTextVisibility;
+        private Visibility _itemMenuVisibility;
 
         #region Properties
         public ObservableRangeCollection<Developer> Developers
@@ -76,38 +77,53 @@ namespace ShopWpf.ViewModel
                 OnPropertyChanged("ErrorTextVisibility");
             }
         }
+
+        public Visibility ItemMenuVisibility
+        {
+            get { return _itemMenuVisibility; }
+            set
+            {
+                _itemMenuVisibility = value;
+                OnPropertyChanged("ItemMenuVisibility");
+            }
+        }
         #endregion
 
         public ApplicationViewModel()
         {
-            GetDevelopersFromDB();
+            HideTable();
+            GetTable();
         }
 
-        public async void GetDevelopersFromDB()
+        public async void GetTable()
         {
-            DataGridVisibility = Visibility.Collapsed;
-            ErrorTextVisibility = Visibility.Visible;
-            ErrorText = "Loading...";
-
             HttpResponseMessage HttpResponse = await Requests.GetRequest(TableNames.Developer);
             Developers = new ObservableRangeCollection<Developer>();
 
             if (HttpResponse.StatusCode != System.Net.HttpStatusCode.OK)
             {
                 ErrorText = ($"Error: {(int)HttpResponse.StatusCode} ({HttpResponse.StatusCode})\n{await HttpResponse.Content.ReadAsStringAsync()}");
-                DataGridVisibility = Visibility.Visible;
                 return;
             }
             Developers.AddRange(JsonSerializer.Deserialize<List<Developer>>(HttpResponse.Content.ReadAsStringAsync().Result)!);
-
-            DataGridVisibility = Visibility.Visible;
-            ErrorTextVisibility = Visibility.Collapsed;
+            ShowTable();
         }
 
-        public async void DeleteDeveloperFromDB(Developer developer)
+        private void HideTable()
+        {
+            DataGridVisibility = Visibility.Collapsed;
+            ErrorTextVisibility = Visibility.Visible;
+            ErrorText = "Loading...";
+        }
+
+        private void ShowTable()
+        {
+            ErrorTextVisibility = Visibility.Collapsed;
+            DataGridVisibility = Visibility.Visible;
+        }
+        public async void DeleteFromTable(Developer developer)
         {
             HttpResponseMessage responseMessage = await Requests.DeleteRequest(TableNames.Developer, developer.id);
-            GetDevelopersFromDB();
         }
 
         #region Commands
@@ -119,19 +135,37 @@ namespace ShopWpf.ViewModel
                 return deleteCommand ??
                   (deleteCommand = new RelayCommand(obj =>
                   {
-                      DeleteDeveloperFromDB(SelectedItem);
+                      HideTable();
+                      DeleteFromTable(SelectedItem);
+                      GetTable();
+                      
                   }));
             }
         }
 
-        private RelayCommand addCommand;
-        public RelayCommand AddCommand
+        private RelayCommand postCommand;
+        public RelayCommand PostCommand
         {
             get
             {
-                return addCommand ??
-                  (addCommand = new RelayCommand(obj =>
+                return postCommand ??
+                  (postCommand = new RelayCommand(obj =>
                   {
+                      ItemMenuVisibility = Visibility.Visible;
+                      Developers.Add(new Developer { id = 1888, name = "fee", logoURL = "logo", registrationDate = DateTime.UtcNow });
+                  }));
+            }
+        }
+
+        private RelayCommand putCommand;
+        public RelayCommand PutCommand
+        {
+            get
+            {
+                return putCommand ??
+                  (putCommand = new RelayCommand(obj =>
+                  {
+                      ItemMenuVisibility = Visibility.Visible;
                       Developers.Add(new Developer { id = 1888, name = "fee", logoURL = "logo", registrationDate = DateTime.UtcNow });
                   }));
             }
@@ -145,7 +179,21 @@ namespace ShopWpf.ViewModel
                 return refreshCommand ??
                   (refreshCommand = new RelayCommand(obj =>
                   {
-                      GetDevelopersFromDB();
+                      HideTable();
+                      GetTable();
+                  }));
+            }
+        }
+
+        private RelayCommand closeItemMenuCommand;
+        public RelayCommand CloseItemMenuCommand
+        {
+            get
+            {
+                return closeItemMenuCommand ??
+                  (closeItemMenuCommand = new RelayCommand(obj =>
+                  {
+                      ItemMenuVisibility = Visibility.Collapsed;
                   }));
             }
         }
