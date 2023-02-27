@@ -30,6 +30,7 @@ namespace ShopWpf
         {
             InitializeComponent();
 
+
             DataContext = new ApplicationViewModel();
         }
 

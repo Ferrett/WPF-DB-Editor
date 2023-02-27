@@ -9,12 +9,12 @@ using System.Globalization;
 
 namespace ShopWpf.Logic.Converters
 {
-    [ValueConversion(typeof(object), typeof(Visibility))]
-    class PutOptionToVisibilityConverter : IValueConverter
+    [ValueConversion(typeof(object), typeof(bool))]
+    class VisibilityToBoolConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (bool)value == false ? Visibility.Visible : Visibility.Collapsed;
+            return (Visibility)value == Visibility.Visible ? true : false;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
