@@ -1,4 +1,5 @@
-﻿using MvvmHelpers;
+﻿using Microsoft.Win32;
+using MvvmHelpers;
 using ShopWpf.Logic;
 using ShopWpf.Models;
 using System;
@@ -6,7 +7,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
@@ -15,20 +18,27 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 
 namespace ShopWpf.ViewModel
 {
     public class ApplicationViewModel : INotifyCollectionChanged, INotifyPropertyChanged
     {
-        private ObservableRangeCollection<Developer> _Developers;
+        private ObservableCollection<Developer> _Developers;
         private dynamic? _selectedItem;
+        private dynamic? _newItem;
         private Visibility _dataGridVisibility;
-        private string _errorText;
-        private Visibility _errorTextVisibility;
+        private string _getRequestMessage;
+        private Visibility _getRequestMessageVisibility;
         private Visibility _itemMenuVisibility;
+        private string _putPostRequestMessage;
+        private Visibility _putPostRequestMessageVisibility;
+        private TabItem _selectedTabItem;
+        private BitmapImage _openedImage;
+        private bool _postOptionSelected;
 
         #region Properties
-        public ObservableRangeCollection<Developer> Developers
+        public ObservableCollection<Developer> Developers
         {
             get { return _Developers; }
             set
@@ -37,7 +47,6 @@ namespace ShopWpf.ViewModel
                 OnPropertyChanged("Developers");
             }
         }
-
         public dynamic? SelectedItem
         {
             get { return _selectedItem; }
@@ -47,7 +56,15 @@ namespace ShopWpf.ViewModel
                 OnPropertyChanged("SelectedItem");
             }
         }
-
+        public dynamic? NewItem
+        {
+            get { return _newItem; }
+            set
+            {
+                _newItem = value;
+                OnPropertyChanged("NewItem");
+            }
+        }
         public Visibility DataGridVisibility
         {
             get { return _dataGridVisibility; }
@@ -57,27 +74,24 @@ namespace ShopWpf.ViewModel
                 OnPropertyChanged("DataGridVisibility");
             }
         }
-
-        public string ErrorText
+        public string GetRequestMessage
         {
-            get { return _errorText; }
+            get { return _getRequestMessage; }
             set
             {
-                _errorText = value;
-                OnPropertyChanged("ErrorText");
+                _getRequestMessage = value;
+                OnPropertyChanged("GetRequestMessage");
             }
         }
-
-        public Visibility ErrorTextVisibility
+        public Visibility GetRequestMessageVisibility
         {
-            get { return _errorTextVisibility; }
+            get { return _getRequestMessageVisibility; }
             set
             {
-                _errorTextVisibility = value;
-                OnPropertyChanged("ErrorTextVisibility");
+                _getRequestMessageVisibility = value;
+                OnPropertyChanged("GetRequestMessageVisibility");
             }
         }
-
         public Visibility ItemMenuVisibility
         {
             get { return _itemMenuVisibility; }
@@ -87,10 +101,56 @@ namespace ShopWpf.ViewModel
                 OnPropertyChanged("ItemMenuVisibility");
             }
         }
+        public string PutPostRequestMessage
+        {
+            get { return _putPostRequestMessage; }
+            set
+            {
+                _putPostRequestMessage = value;
+                OnPropertyChanged("PutPostRequestMessage");
+            }
+        }
+        public Visibility PutPostRequestMessageVisibility
+        {
+            get { return _putPostRequestMessageVisibility; }
+            set
+            {
+                _putPostRequestMessageVisibility = value;
+                OnPropertyChanged("PutPostRequestMessageVisibility");
+            }
+        }
+        public TabItem SelectedTabItem
+        {
+            get { return _selectedTabItem; }
+            set
+            {
+                _selectedTabItem = value;
+                OnPropertyChanged("SelectedTabItem");
+            }
+        }
+        public BitmapImage OpenedImage
+        {
+            get { return _openedImage; }
+            set
+            {
+                _openedImage = value;
+                OnPropertyChanged("OpenedImage");
+            }
+        }
+        public bool PostOptionSelected
+        {
+            get { return _postOptionSelected; }
+            set
+            {
+                _postOptionSelected = value;
+                OnPropertyChanged("PostOptionSelected");
+            }
+        }
         #endregion
 
         public ApplicationViewModel()
         {
+            NewItem = new Developer();
             HideTable();
             GetTable();
         }
@@ -98,32 +158,113 @@ namespace ShopWpf.ViewModel
         public async void GetTable()
         {
             HttpResponseMessage HttpResponse = await Requests.GetRequest(TableNames.Developer);
-            Developers = new ObservableRangeCollection<Developer>();
+            Developers = new ObservableCollection<Developer>();
 
             if (HttpResponse.StatusCode != System.Net.HttpStatusCode.OK)
             {
-                ErrorText = ($"Error: {(int)HttpResponse.StatusCode} ({HttpResponse.StatusCode})\n{await HttpResponse.Content.ReadAsStringAsync()}");
+                GetRequestMessage = ($"Error: {(int)HttpResponse.StatusCode} ({HttpResponse.StatusCode})\n{await HttpResponse.Content.ReadAsStringAsync()}");
                 return;
             }
-            Developers.AddRange(JsonSerializer.Deserialize<List<Developer>>(HttpResponse.Content.ReadAsStringAsync().Result)!);
+
+            List<Developer> list = new List<Developer>();
+            list.AddRange(JsonSerializer.Deserialize<List<Developer>>(HttpResponse.Content.ReadAsStringAsync().Result)!);
+
+            foreach (var item in list)
+            {
+                Developers.Add(item);
+            }
+            
             ShowTable();
         }
 
         private void HideTable()
         {
+            //var a = PostOptionSelected;
             DataGridVisibility = Visibility.Collapsed;
-            ErrorTextVisibility = Visibility.Visible;
-            ErrorText = "Loading...";
+            GetRequestMessageVisibility = Visibility.Visible;
+            GetRequestMessage = "Loading...";
         }
 
         private void ShowTable()
         {
-            ErrorTextVisibility = Visibility.Collapsed;
+            GetRequestMessageVisibility = Visibility.Collapsed;
             DataGridVisibility = Visibility.Visible;
         }
         public async void DeleteFromTable(Developer developer)
         {
             HttpResponseMessage responseMessage = await Requests.DeleteRequest(TableNames.Developer, developer.id);
+        }
+
+        public async Task PostNewItem()
+        {
+            MultipartFormDataContent? multipartContent = null;
+            string content = string.Empty;
+            HttpResponseMessage response = new HttpResponseMessage();
+
+            if (OpenedImage != null)
+            {
+                multipartContent = new MultipartFormDataContent();
+                multipartContent.Add(new ByteArrayContent(ImageToHttpContent(OpenedImage)), "logo");
+            }
+
+            switch (SelectedTabItem.Tag)
+            {
+                case TableNames.Developer:
+                    {
+                        Developer developer = NewItem as Developer;
+                        content = $"{developer.name}";
+                        break;
+                    }
+                //case TableNames.Game:
+                //    {
+                //        content = $"{GameName.Text}/{GamePrice.Text}/{GameDevID.Text}";
+                //        content += GameAchCount.Text != string.Empty ? $"?achCount={GameAchCount.Text}" : string.Empty;
+                //        break;
+                //    }
+                //case TableNames.GameStats:
+                //    {
+                //        content = $"{GameStatsUserID.Text}/{GameStatsGameID.Text}";
+                //        break;
+                //    }
+                //case TableNames.Review:
+                //    {
+                //        content = $"{ReviewIsPositive.IsChecked}/{ReviewUserID.Text}/{ReviewGameID.Text}";
+                //        content += ReviewText.Text != string.Empty ? $"?text={ReviewText.Text}" : string.Empty;
+                //        break;
+                //    }
+                //case TableNames.User:
+                //    {
+                //        content = $"{UserLogin.Text}/{UserPassword.Text}/{UserNickname.Text}";
+                //        content += UserEmail.Text != string.Empty ? $"?email={UserEmail.Text}" : string.Empty;
+                //        break;
+                //    }
+                default:
+                    break;
+            }
+            response = await Requests.PostRequest(SelectedTabItem.Tag.ToString(), content, multipartContent);
+
+            ShowRequestLog(response.StatusCode == HttpStatusCode.OK ? "Data Posted successfuly" :
+                            $"Error: {(int)response.StatusCode} ({response.StatusCode})\n{await response.Content.ReadAsStringAsync()}");
+        }
+
+        public byte[] ImageToHttpContent(BitmapImage img)
+        {
+            byte[] data;
+            JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(img));
+            using (MemoryStream ms = new MemoryStream())
+            {
+                encoder.Save(ms);
+                data = ms.ToArray();
+            }
+
+            return data;
+        }
+
+        private void ShowRequestLog(string errorText)
+        {
+            PutPostRequestMessageVisibility = Visibility.Visible;
+            PutPostRequestMessage = errorText;
         }
 
         #region Commands
@@ -138,7 +279,7 @@ namespace ShopWpf.ViewModel
                       HideTable();
                       DeleteFromTable(SelectedItem);
                       GetTable();
-                      
+
                   }));
             }
         }
@@ -151,8 +292,9 @@ namespace ShopWpf.ViewModel
                 return postCommand ??
                   (postCommand = new RelayCommand(obj =>
                   {
+                      PostOptionSelected = true;
                       ItemMenuVisibility = Visibility.Visible;
-                      Developers.Add(new Developer { id = 1888, name = "fee", logoURL = "logo", registrationDate = DateTime.UtcNow });
+                      //Developers.Add(new Developer { id = 1888, name = "fee", logoURL = "logo", registrationDate = DateTime.UtcNow });
                   }));
             }
         }
@@ -165,8 +307,9 @@ namespace ShopWpf.ViewModel
                 return putCommand ??
                   (putCommand = new RelayCommand(obj =>
                   {
+                      PostOptionSelected = false;
                       ItemMenuVisibility = Visibility.Visible;
-                      Developers.Add(new Developer { id = 1888, name = "fee", logoURL = "logo", registrationDate = DateTime.UtcNow });
+                      //Developers.Add(new Developer { id = 1888, name = "fee", logoURL = "logo", registrationDate = DateTime.UtcNow });
                   }));
             }
         }
@@ -194,6 +337,52 @@ namespace ShopWpf.ViewModel
                   (closeItemMenuCommand = new RelayCommand(obj =>
                   {
                       ItemMenuVisibility = Visibility.Collapsed;
+                  }));
+            }
+        }
+
+        private RelayCommand postItemCommand;
+        public RelayCommand PostItemCommand
+        {
+            get
+            {
+                return postItemCommand ??
+                  (postItemCommand = new RelayCommand(async obj =>
+                  {
+                      HideTable();
+                      await PostNewItem();
+                      GetTable();
+                  }));
+            }
+        }
+
+        private RelayCommand openImageFromFileCommand;
+        public RelayCommand OpenImageFromFileCommand
+        {
+            get
+            {
+                return openImageFromFileCommand ??
+                  (openImageFromFileCommand = new RelayCommand(async obj =>
+                  {
+                      OpenFileDialog openFileDialogLoad = new OpenFileDialog();
+
+                      if (openFileDialogLoad.ShowDialog() == true)
+                      {
+                          OpenedImage = new BitmapImage(new Uri(openFileDialogLoad.FileName));
+                      }
+                  }));
+            }
+        }
+
+        private RelayCommand updateItemCommand;
+        public RelayCommand UpdateItemCommand
+        {
+            get
+            {
+                return updateItemCommand ??
+                  (updateItemCommand = new RelayCommand(async obj =>
+                  {
+                      
                   }));
             }
         }

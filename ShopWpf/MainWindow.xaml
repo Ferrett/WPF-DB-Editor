@@ -12,6 +12,8 @@
         <cnv:NotNullToBoolConverter x:Key="NotNullToBool"/>
         <cnv:NotNullToVisibilityConverter x:Key="NotNullToVisibility"/>
         <cnv:UrlToBitmapImageConverter x:Key="UrlToBitmapImage"/>
+        <cnv:PutOptionToVisibilityConverter x:Key="PutOptionToVisibility"/>
+        <cnv:PostOptionToVisibilityConverter x:Key="PostOptionToVisibility"/>
 
         <Style x:Key="ItemMenuLabelStyle" TargetType="Label">
             <Setter Property="HorizontalAlignment" Value="Center"/>
@@ -22,7 +24,7 @@
         </Style>
 
         <BitmapImage x:Key="LoadingImage" UriSource="/Resources/loading.png" />
-        
+
     </Window.Resources>
 
     <Grid Background="#FFE5E5E5">
@@ -40,8 +42,8 @@
             <Grid Grid.Column="0" Grid.Row="0" Background="White">
                 <StackPanel>
                     <Grid Background="#FFE5E5E5">
-                        <TabControl x:Name="TabControl" BorderThickness="0">
-                            <TabItem Tag="{Binding Source={x:Static logic:TableNames.Developer}}" Height="30" Padding="10,0,10,0" Header="{Binding Source={x:Static logic:TableNames.Developer}}"></TabItem>
+                        <TabControl x:Name="TabControl" BorderThickness="0" SelectedItem="{Binding SelectedTabItem, UpdateSourceTrigger=PropertyChanged,Mode=OneWayToSource}">
+                            <TabItem Tag="{Binding Source={x:Static logic:TableNames.Developer}}" IsSelected="True" Height="30" Padding="10,0,10,0" Header="{Binding Source={x:Static logic:TableNames.Developer}}"></TabItem>
                             <TabItem Tag="{Binding Source={x:Static logic:TableNames.Game}}"      Height="30" Padding="10,0,10,0" Header="{Binding Source={x:Static logic:TableNames.Game}}"></TabItem>
                             <TabItem Tag="{Binding Source={x:Static logic:TableNames.GameStats}}" Height="30" Padding="10,0,10,0" Header="{Binding Source={x:Static logic:TableNames.GameStats}}"></TabItem>
                             <TabItem Tag="{Binding Source={x:Static logic:TableNames.Review}}"    Height="30" Padding="10,0,10,0" Header="{Binding Source={x:Static logic:TableNames.Review}}"></TabItem>
@@ -51,7 +53,7 @@
                     </Grid>
 
                     <Grid>
-                        <DataGrid Visibility="{Binding DataGridVisibility}" CanUserAddRows="False" CanUserDeleteRows="False" ItemsSource="{Binding Developers, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedItem}"  MaxHeight="600" AutoGenerateColumns="False" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <DataGrid Visibility="{Binding DataGridVisibility}" ItemsSource="{Binding Developers, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedItem}"  MaxHeight="600" AutoGenerateColumns="False" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" CanUserAddRows="False" CanUserDeleteRows="False" >
                             <DataGrid.Columns>
                                 <DataGridTextColumn Width="*" Header="ID" Binding="{Binding id, UpdateSourceTrigger=PropertyChanged}"/>
                                 <DataGridTextColumn Width="*" Header="Name" Binding="{Binding name, UpdateSourceTrigger=PropertyChanged}"/>
@@ -61,7 +63,7 @@
 
                         </DataGrid>
                     </Grid>
-                    <Label Visibility="{Binding ErrorTextVisibility}" VerticalAlignment="Top" HorizontalAlignment="Center" Content="{Binding ErrorText}"></Label>
+                    <Label Visibility="{Binding GetRequestMessageVisibility}" VerticalAlignment="Top" HorizontalAlignment="Center" Content="{Binding GetRequestMessage}"></Label>
                 </StackPanel>
             </Grid>
 
@@ -98,19 +100,29 @@
                             <Grid>
                                 <Image Stretch="UniformToFill" Height="auto" Margin="10,0,10,0" Source="{StaticResource LoadingImage}" ></Image>
                                 <Image DataContext="{Binding SelectedItem}" Stretch="UniformToFill" Height="auto" Margin="10,0,10,0" Source="{Binding logoURL,Converter={StaticResource UrlToBitmapImage}}"></Image>
+                                <Image Stretch="UniformToFill" Height="auto" Margin="10,0,10,0" Source="{Binding OpenedImage}"></Image>
                             </Grid>
-                            <Button x:Name="SelectImageBtn" Margin="10,10,10,0" Height="30" Content="Open..."></Button>
+                            <Button Command="{Binding OpenImageFromFileCommand}" Margin="10,10,10,0" Height="30" Content="Open..."></Button>
                             <Line X1="0" X2="220" Stroke="Black" Margin="0,20,0,0"></Line>
                         </StackPanel>
 
-                        <StackPanel DataContext="{Binding SelectedItem}">
-                            <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Name" />
-                            <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding name, UpdateSourceTrigger=PropertyChanged}" />
-                            <Label Style="{StaticResource ItemMenuLabelStyle}" Content="LogoURL" />
-                            <TextBox Text="{Binding logoURL, UpdateSourceTrigger=PropertyChanged}" />
-                            <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Registration Date" />
-                            <TextBox Text="{Binding registrationDate, UpdateSourceTrigger=PropertyChanged}" />
-                        </StackPanel>
+                        <Grid Visibility="{Binding PostOptionSelected, Converter={StaticResource PostOptionToVisibility}, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}">
+                            <StackPanel DataContext="{Binding NewItem}">
+                                <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Name" />
+                                <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding name, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Visibility="{Binding PostOptionSelected, Converter={StaticResource PutOptionToVisibility}, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}">
+                            <StackPanel DataContext="{Binding SelectedItem}" >
+                                <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Name" />
+                                <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding name, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                                <Label Style="{StaticResource ItemMenuLabelStyle}" Content="LogoURL" />
+                                <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding logoURL, UpdateSourceTrigger=PropertyChanged}" />
+                                <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Registration Date" />
+                                <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding registrationDate, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                        </Grid>
 
                         <StackPanel>
                             <StackPanel x:Name="PostGameMenu" Visibility="Collapsed">
@@ -180,7 +192,8 @@
 
                     <StackPanel Grid.Row="3"  VerticalAlignment="Bottom">
                         <Line X1="0" X2="220" Margin="0,10,0,0" Stroke="Black"></Line>
-                        <Button x:Name="MenuSubmitBtn"  Height="30" Margin="10,10,10,10" Background="Lime" Content="Submit"></Button>
+                        <Button Visibility="{Binding PostOptionSelected, Converter={StaticResource PostOptionToVisibility},UpdateSourceTrigger=PropertyChanged}" Command="{Binding PostItemCommand}"  Height="30" Margin="10,10,10,10" Background="Lime" Content="Submit"></Button>
+                        <Button Visibility="{Binding PostOptionSelected, Converter={StaticResource PutOptionToVisibility},UpdateSourceTrigger=PropertyChanged}" Command="{Binding UpdateItemCommand}" Height="30" Margin="10,10,10,10" Background="Orange" Content="Update"></Button>
                         <Button Command="{Binding CloseItemMenuCommand}" Height="30" Margin="10,0,10,10" Background="Red" Content="Close"  ></Button>
                     </StackPanel>
 
