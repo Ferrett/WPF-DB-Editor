@@ -25,7 +25,6 @@ namespace ShopWpf.Models
                 OnPropertyChanged("id");
             }
         }
-
         public string name
         {
             get { return _name; }
@@ -35,7 +34,6 @@ namespace ShopWpf.Models
                 OnPropertyChanged("name");
             }
         }
-
         public string logoURL
         {
             get { return _logoURL; }
@@ -45,7 +43,6 @@ namespace ShopWpf.Models
                 OnPropertyChanged("logoURL");
             }
         }
-
         public DateTime registrationDate
         {
             get { return _registrationDate; }

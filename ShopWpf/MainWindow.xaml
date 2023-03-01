@@ -7,7 +7,7 @@
         xmlns:cnv="clr-namespace:ShopWpf.Logic.Converters"
         xmlns:beh="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
-        Title="Api Controller" MaxHeight="800" MinHeight="500" SizeToContent="Height" Width="1100">
+        Title="Api Controller" MinHeight="800" SizeToContent="Height" Width="1300">
 
     <Window.Resources>
         <cnv:NotNullToBoolConverter x:Key="NotNullToBool"/>
@@ -132,9 +132,9 @@
                             <Line X1="0" X2="220" Stroke="Black" Margin="0,20,0,0"></Line>
                         </StackPanel>
 
-                        <Grid>
+                        <Grid Visibility="{Binding SelectedTabItem.Tag, Converter={StaticResource DeveloperGridVisibility},UpdateSourceTrigger=PropertyChanged}">
                             <Grid Visibility="{Binding PostOptionSelected, Converter={StaticResource PostOptionToVisibility}, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
-                                <StackPanel DataContext="{Binding NewItem}">
+                                <StackPanel DataContext="{Binding NewDeveloper}">
                                     <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Name" />
                                     <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding name, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
                                 </StackPanel>
@@ -148,9 +148,9 @@
                             </Grid>
                         </Grid>
 
-                        <!--<Grid >
-                            <Grid Visibility="{Binding PostOptionSelected, Converter={StaticResource PutOptionToVisibility}, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}">
-                                <StackPanel DataContext="{Binding NewItem}">
+                        <Grid Visibility="{Binding SelectedTabItem.Tag, Converter={StaticResource GameGridVIsibility},UpdateSourceTrigger=PropertyChanged}">
+                            <Grid Visibility="{Binding PostOptionSelected, Converter={StaticResource PostOptionToVisibility}, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}">
+                                <StackPanel DataContext="{Binding NewGame}">
                                     <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Developer ID"></Label>
                                     <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding developerID, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" ></TextBox>
                                     <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Name"></Label>
@@ -170,7 +170,7 @@
                                 <Label HorizontalAlignment="Center" Content="Achievements Count (optional)"></Label>
                                 <TextBox x:Name="GameAchCount"  Margin="10,0" Background="White"></TextBox>
                             </StackPanel>
-                        </Grid>-->
+                        </Grid>
 
                         <StackPanel>
                             <StackPanel x:Name="PostGameStatsMenu" Visibility="Collapsed">

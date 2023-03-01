@@ -27,10 +27,12 @@ namespace ShopWpf.ViewModel
     public class ApplicationViewModel : INotifyCollectionChanged, INotifyPropertyChanged
     {
         private ObservableCollection<Developer> _Developers;
+        private Developer _newDeveloper;
+
         private ObservableCollection<Game> _Games;
+        private Game _newGame;
 
         private dynamic? _selectedItem;
-        private dynamic? _newItem;
         private dynamic? _updatedItem;
 
         private Visibility _dataGridVisibility;
@@ -77,13 +79,22 @@ namespace ShopWpf.ViewModel
                 OnPropertyChanged("SelectedItem");
             }
         }
-        public dynamic? NewItem
+        public Developer NewDeveloper
         {
-            get { return _newItem; }
+            get { return _newDeveloper; }
             set
             {
-                _newItem = value;
+                _newDeveloper = value;
                 OnPropertyChanged("NewItem");
+            }
+        }
+        public Game NewGame
+        {
+            get { return _newGame; }
+            set
+            {
+                _newGame = value;
+                OnPropertyChanged("NewGame");
             }
         }
         public Visibility DataGridVisibility
@@ -217,15 +228,42 @@ namespace ShopWpf.ViewModel
                     }
                 case TableNames.GameStats:
                     {
-                        return null;
+                        return (dynamic)new GameStats
+                        {
+                            id = selectedItem.id,
+                            userID = selectedItem.userID,
+                            gameID = selectedItem.gameID,
+                            hoursPlayed = selectedItem.hoursPlayed,
+                            achievementsGot = selectedItem.achievementsGot,
+                            purchasehDate = selectedItem.purchasehDate,
+                            lastLaunchDate = selectedItem.lastLaunchDate
+                        };
                     }
                 case TableNames.Review:
                     {
-                        return null;
+                        return (dynamic)new Review
+                        {
+                            id = selectedItem.id,
+                            userID = selectedItem.userID,
+                            gameID = selectedItem.gameID,
+                            text = selectedItem.text,
+                            isPositive = selectedItem.isPositive,
+                            creationDate = selectedItem.creationDate,
+                            lastEditDate = selectedItem.lastEditDate
+                        };
                     }
                 case TableNames.User:
                     {
-                        return null;
+                        return (dynamic)new User
+                        {
+                            id = selectedItem.id,
+                            login = selectedItem.login,
+                            avatarURL = selectedItem.avatarURL,
+                            email = selectedItem.email,
+                            passwordHash = selectedItem.passwordHash,
+                            creationDate = selectedItem.creationDate,
+                            nickame = selectedItem.nickame
+                        };
                     }
                 default:
                     return null;
@@ -237,7 +275,8 @@ namespace ShopWpf.ViewModel
         {
             ItemMenuVisibility = Visibility.Collapsed;
             PutPostRequestMessageVisibility = Visibility.Collapsed;
-            NewItem = new Developer();
+            NewDeveloper = new Developer();
+            NewGame = new Game();
         }
 
         public async void GetTable(string a = null)
@@ -278,6 +317,13 @@ namespace ShopWpf.ViewModel
                     }
                 case TableNames.GameStats:
                     {
+                        //List<GameStats> tmpList = new List<GameStats>();
+                        //tmpList.AddRange(JsonSerializer.Deserialize<List<GameStats>>(HttpResponse.Content.ReadAsStringAsync().Result)!);
+                        //Games = new ObservableCollection<GameStats>();
+                        //foreach (var item in tmpList)
+                        //{
+                        //    Games.Add(item);
+                        //}
                         break;
                     }
                 case TableNames.Review:
@@ -328,13 +374,13 @@ namespace ShopWpf.ViewModel
             {
                 case TableNames.Developer:
                     {
-                        content = Convert.ToString(NewItem.name);
+                        content = Convert.ToString(NewDeveloper.name);
                         break;
                     }
                 case TableNames.Game:
                     {
-                        content = $"{NewItem.name}/{NewItem.price}/{NewItem.developerID}";
-                        content += NewItem.achievementsCount != null ? $"?achCount={NewItem.achievementsCount}" : null;
+                        content = $"{NewGame.name}/{NewGame.price}/{NewGame.developerID}";
+                        content += NewGame.achievementsCount != null ? $"?achCount={NewGame.achievementsCount}" : null;
                         break;
                     }
                 //case TableNames.GameStats:
@@ -574,7 +620,7 @@ namespace ShopWpf.ViewModel
                       HideTable();
                       await PostNewItem();
                       GetTable();
-                      OpenedImage = new BitmapImage();
+                      
                   }));
             }
         }
@@ -590,7 +636,7 @@ namespace ShopWpf.ViewModel
                       HideTable();
                       await UpdateSelectedItem();
                       GetTable();
-                      OpenedImage = new BitmapImage();
+
                   }));
             }
         }
@@ -621,9 +667,12 @@ namespace ShopWpf.ViewModel
                 return tabChangedCommand ??
                   (tabChangedCommand = new RelayCommand(async obj =>
                   {
-                      GetRequestMessageVisibility = Visibility.Collapsed;
+                      GetRequestMessageVisibility = Visibility.Visible;
+                      GetRequestMessage = "Loading...";
+                      ItemMenuVisibility = Visibility.Collapsed;
+                      
                       GetTable();
-                      OpenedImage = new BitmapImage();
+                      OpenedImage = null;
                   }));
             }
         }
