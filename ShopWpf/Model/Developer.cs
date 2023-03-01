@@ -4,9 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 
 namespace ShopWpf.Models
 {
+    [Serializable]
     public record Developer : INotifyPropertyChanged
     {
         private int _id { get; set; }

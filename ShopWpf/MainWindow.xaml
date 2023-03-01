@@ -7,7 +7,7 @@
         xmlns:cnv="clr-namespace:ShopWpf.Logic.Converters"
         xmlns:beh="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
-        Title="Api Controller" MaxHeight="800" MinHeight="500"  SizeToContent="Height"  Width="900">
+        Title="Api Controller" MaxHeight="800" MinHeight="500" SizeToContent="Height" Width="1100">
 
     <Window.Resources>
         <cnv:NotNullToBoolConverter x:Key="NotNullToBool"/>
@@ -16,6 +16,8 @@
         <cnv:PutOptionToVisibilityConverter x:Key="PutOptionToVisibility"/>
         <cnv:PostOptionToVisibilityConverter x:Key="PostOptionToVisibility"/>
         <cnv:VisibilityToBoolConverter x:Key="VisibilityToBool"/>
+        <cnv:DeveloperGridVisibilityConverter x:Key="DeveloperGridVisibility"/>
+        <cnv:GameGridVIsibilityConverter x:Key="GameGridVIsibility"/>
 
         <Style x:Key="ItemMenuLabelStyle" TargetType="Label">
             <Setter Property="HorizontalAlignment" Value="Center"/>
@@ -45,12 +47,13 @@
             <Grid Grid.Column="0" Grid.Row="0" Background="White">
                 <StackPanel>
                     <Grid Background="#FFE5E5E5">
-                        <TabControl x:Name="TabControl" BorderThickness="0" SelectedItem="{Binding SelectedTabItem, UpdateSourceTrigger=PropertyChanged,Mode=OneWayToSource}">
+                        <TabControl BorderThickness="0" SelectedItem="{Binding SelectedTabItem, UpdateSourceTrigger=PropertyChanged,Mode=OneWayToSource}">
                             <beh:Interaction.Triggers>
                                 <beh:EventTrigger EventName="SelectionChanged">
                                     <beh:InvokeCommandAction Command="{Binding TabChangedCommand}" />
                                 </beh:EventTrigger>
                             </beh:Interaction.Triggers>
+
                             <TabItem Tag="{Binding Source={x:Static logic:TableNames.Developer}}" IsSelected="True" Height="30" Padding="10,0,10,0" Header="{Binding Source={x:Static logic:TableNames.Developer}}"></TabItem>
                             <TabItem Tag="{Binding Source={x:Static logic:TableNames.Game}}"      Height="30" Padding="10,0,10,0" Header="{Binding Source={x:Static logic:TableNames.Game}}"></TabItem>
                             <TabItem Tag="{Binding Source={x:Static logic:TableNames.GameStats}}" Height="30" Padding="10,0,10,0" Header="{Binding Source={x:Static logic:TableNames.GameStats}}"></TabItem>
@@ -60,15 +63,27 @@
                         <Button Command="{Binding RefreshCommand}" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,0,0,0" Width="30" Height="30" Content="⭯"></Button>
                     </Grid>
 
-                    <Grid>
-                        <DataGrid Visibility="{Binding DataGridVisibility}" ItemsSource="{Binding Developers, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedItem}"  MaxHeight="600" AutoGenerateColumns="False" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" CanUserAddRows="False" CanUserDeleteRows="False" >
+                    <Grid Visibility="{Binding SelectedTabItem.Tag, Converter={StaticResource DeveloperGridVisibility},UpdateSourceTrigger=PropertyChanged}">
+                        <DataGrid Visibility="{Binding DataGridVisibility}" IsReadOnly="True" ItemsSource="{Binding Developers, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedItem}"  MaxHeight="600" AutoGenerateColumns="False" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" CanUserAddRows="False" CanUserDeleteRows="False" >
                             <DataGrid.Columns>
                                 <DataGridTextColumn Width="*" Header="ID" Binding="{Binding id, UpdateSourceTrigger=PropertyChanged}"/>
                                 <DataGridTextColumn Width="*" Header="Name" Binding="{Binding name, UpdateSourceTrigger=PropertyChanged}"/>
-                                <DataGridTextColumn Width="*" Header="LogoURL" Binding="{Binding logoURL, UpdateSourceTrigger=PropertyChanged}"/>
-                                <DataGridTextColumn Width="*" Header="RegistrationDate" Binding="{Binding registrationDate, UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Width="*" Header="Logo URL" Binding="{Binding logoURL, UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Width="*" Header="Registration Date" Binding="{Binding registrationDate, UpdateSourceTrigger=PropertyChanged}"/>
                             </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
 
+                    <Grid Visibility="{Binding SelectedTabItem.Tag, Converter={StaticResource GameGridVIsibility},UpdateSourceTrigger=PropertyChanged}">
+                        <DataGrid Visibility="{Binding DataGridVisibility}" IsReadOnly="True" ItemsSource="{Binding Games, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedItem}"  MaxHeight="600" AutoGenerateColumns="False" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" CanUserAddRows="False" CanUserDeleteRows="False" >
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Width="*" Header="ID" Binding="{Binding id, UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Width="*" Header="Name" Binding="{Binding name, UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Width="*" Header="Logo URL" Binding="{Binding logoURL, UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Width="*" Header="Price" Binding="{Binding price, UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Width="*" Header="Publish Date" Binding="{Binding publishDate, UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Width="*" Header="Achievements Count" Binding="{Binding achievementsCount, UpdateSourceTrigger=PropertyChanged}"/>
+                            </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
                     <Label Visibility="{Binding GetRequestMessageVisibility}" VerticalAlignment="Top" HorizontalAlignment="Center" Content="{Binding GetRequestMessage}"></Label>
@@ -97,9 +112,9 @@
                         <RowDefinition Height="*"></RowDefinition>
                     </Grid.RowDefinitions>
 
-                    <StackPanel x:Name="ItemIDMenu" Grid.Row="0" Visibility="{Binding SelectedItem, Converter={StaticResource NotNullToVisibility}, UpdateSourceTrigger=PropertyChanged}">
+                    <StackPanel x:Name="ItemIDMenu" Grid.Row="0" Visibility="{Binding PostOptionSelected, Converter={StaticResource PutOptionToVisibility}, UpdateSourceTrigger=PropertyChanged}">
                         <Label HorizontalAlignment="Center" DataContext="{Binding SelectedItem}" ContentStringFormat="ID: {0}" Content="{Binding id, UpdateSourceTrigger=PropertyChanged}"></Label>
-                        <Line X1="0" X2="220" Stroke="Black" Margin="0,00,0,0"></Line>
+                        <Line X1="0" X2="220" Stroke="Black" Margin="0,0,0,0"></Line>
                     </StackPanel>
 
                     <StackPanel Grid.Row="1">
@@ -111,35 +126,41 @@
                                     <Image  DataContext="{Binding SelectedItem}" Stretch="UniformToFill" Height="200" Margin="10,0,10,0" Source="{Binding logoURL,Converter={StaticResource UrlToBitmapImage}}"></Image>
                                 </Grid>
                                 <Image Visibility="{Binding PostOptionSelected, Converter={StaticResource PostOptionToVisibility},UpdateSourceTrigger=PropertyChanged}" Stretch="UniformToFill" Height="200" Margin="10,0,10,0" Source="{StaticResource DefaultImage}" ></Image>
-                                <Image Visibility="{Binding PostOptionSelected, Converter={StaticResource PostOptionToVisibility},UpdateSourceTrigger=PropertyChanged}" Stretch="UniformToFill" Height="200" Margin="10,0,10,0" Source="{Binding OpenedImage}"></Image>
+                                <Image Visibility="Visible" Stretch="UniformToFill" Height="200" Margin="10,0,10,0" Source="{Binding OpenedImage, Mode=OneWay}"></Image>
                             </Grid>
                             <Button Command="{Binding OpenImageFromFileCommand}" IsEnabled="{Binding DataGridVisibility, Converter={StaticResource VisibilityToBool}, UpdateSourceTrigger=PropertyChanged}" Margin="10,10,10,0" Height="30" Content="Open..."></Button>
                             <Line X1="0" X2="220" Stroke="Black" Margin="0,20,0,0"></Line>
                         </StackPanel>
 
-                        <Grid Visibility="{Binding PostOptionSelected, Converter={StaticResource PostOptionToVisibility}, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}">
-                            <StackPanel DataContext="{Binding NewItem}">
-                                <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Name" />
-                                <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding name, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
-                            </StackPanel>
+                        <Grid>
+                            <Grid Visibility="{Binding PostOptionSelected, Converter={StaticResource PostOptionToVisibility}, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+                                <StackPanel DataContext="{Binding NewItem}">
+                                    <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Name" />
+                                    <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding name, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid Visibility="{Binding PostOptionSelected, Converter={StaticResource PutOptionToVisibility}, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}">
+                                <StackPanel DataContext="{Binding UpdatedItem}" >
+                                    <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Name" />
+                                    <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding name, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                                </StackPanel>
+                            </Grid>
                         </Grid>
 
-                        <Grid Visibility="{Binding PostOptionSelected, Converter={StaticResource PutOptionToVisibility}, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}">
-                            <StackPanel DataContext="{Binding SelectedItem}" >
-                                <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Name" />
-                                <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding name, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
-                                <Label Style="{StaticResource ItemMenuLabelStyle}" Content="LogoURL" />
-                                <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding logoURL, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
-                                <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Registration Date" />
-                                <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding registrationDate, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
-                            </StackPanel>
-                        </Grid>
-
-                        <StackPanel>
-                            <StackPanel x:Name="PostGameMenu" Visibility="Collapsed">
-                                <Label HorizontalAlignment="Center" Content="Developer ID"></Label>
-                                <TextBox x:Name="GameDevID"  Margin="10,0" ></TextBox>
-                            </StackPanel>
+                        <!--<Grid >
+                            <Grid Visibility="{Binding PostOptionSelected, Converter={StaticResource PutOptionToVisibility}, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}">
+                                <StackPanel DataContext="{Binding NewItem}">
+                                    <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Developer ID"></Label>
+                                    <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding developerID, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" ></TextBox>
+                                    <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Name"></Label>
+                                    <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding name, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"></TextBox>
+                                    <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Price"></Label>
+                                    <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding price, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"></TextBox>
+                                    <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Achievements Count (optional)"></Label>
+                                    <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding achievementsCount, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"></TextBox>
+                                </StackPanel>
+                            </Grid>
 
                             <StackPanel x:Name="PutGameMenu" Visibility="Collapsed">
                                 <Label HorizontalAlignment="Center" Content="Name"></Label>
@@ -149,7 +170,7 @@
                                 <Label HorizontalAlignment="Center" Content="Achievements Count (optional)"></Label>
                                 <TextBox x:Name="GameAchCount"  Margin="10,0" Background="White"></TextBox>
                             </StackPanel>
-                        </StackPanel>
+                        </Grid>-->
 
                         <StackPanel>
                             <StackPanel x:Name="PostGameStatsMenu" Visibility="Collapsed">
@@ -196,7 +217,7 @@
 
                     </StackPanel>
 
-                    <StackPanel Visibility="{Binding PutPostRequestMessageVisibility}" Grid.Row="2" VerticalAlignment="Bottom" >
+                    <StackPanel Visibility="{Binding PutPostRequestMessageVisibility}" Grid.Row="2" VerticalAlignment="Bottom">
                         <Line X1="0" X2="220" Stroke="Black" Margin="0,10,0,10"></Line>
                         <TextBlock Text="{Binding PutPostRequestMessage, UpdateSourceTrigger=PropertyChanged}" TextAlignment="Center" Background="White" Height="auto" Margin="10,0" Visibility="Visible" TextWrapping="Wrap"></TextBlock>
                     </StackPanel>

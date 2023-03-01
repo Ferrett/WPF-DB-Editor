@@ -490,19 +490,19 @@ namespace ShopWpf
         //        return int.Parse(id);
         //    }
 
-        //    public byte[] ImageToHttpContent(Image img)
+        //public byte[] ImageToHttpContent(Image img)
+        //{
+        //    byte[] data;
+        //    JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+        //    encoder.Frames.Add(BitmapFrame.Create(img.Source as BitmapImage));
+        //    using (MemoryStream ms = new MemoryStream())
         //    {
-        //        byte[] data;
-        //        JpegBitmapEncoder encoder = new JpegBitmapEncoder();
-        //        encoder.Frames.Add(BitmapFrame.Create(img.Source as BitmapImage));
-        //        using (MemoryStream ms = new MemoryStream())
-        //        {
-        //            encoder.Save(ms);
-        //            data = ms.ToArray();
-        //        }
-
-        //        return data;
+        //        encoder.Save(ms);
+        //        data = ms.ToArray();
         //    }
+
+        //    return data;
+        //}
 
         //    public BitmapImage LogoUrlToBitmapImage(string logoUrl)
         //    {
