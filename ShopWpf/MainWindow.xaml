@@ -133,42 +133,22 @@
                         </StackPanel>
 
                         <Grid Visibility="{Binding SelectedTabItem.Tag, Converter={StaticResource DeveloperGridVisibility},UpdateSourceTrigger=PropertyChanged}">
-                            <Grid Visibility="{Binding PostOptionSelected, Converter={StaticResource PostOptionToVisibility}, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
-                                <StackPanel DataContext="{Binding NewDeveloper}">
-                                    <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Name" />
-                                    <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding name, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
-                                </StackPanel>
-                            </Grid>
-
-                            <Grid Visibility="{Binding PostOptionSelected, Converter={StaticResource PutOptionToVisibility}, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}">
-                                <StackPanel DataContext="{Binding UpdatedItem}" >
-                                    <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Name" />
-                                    <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding name, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
-                                </StackPanel>
-                            </Grid>
+                            <StackPanel DataContext="{Binding Test}">
+                                <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Name" />
+                                <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding name, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                            </StackPanel>
                         </Grid>
 
                         <Grid Visibility="{Binding SelectedTabItem.Tag, Converter={StaticResource GameGridVIsibility},UpdateSourceTrigger=PropertyChanged}">
-                            <Grid Visibility="{Binding PostOptionSelected, Converter={StaticResource PostOptionToVisibility}, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}">
-                                <StackPanel DataContext="{Binding NewGame}">
-                                    <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Developer ID"></Label>
-                                    <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding developerID, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" ></TextBox>
-                                    <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Name"></Label>
-                                    <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding name, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"></TextBox>
-                                    <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Price"></Label>
-                                    <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding price, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"></TextBox>
-                                    <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Achievements Count (optional)"></Label>
-                                    <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding achievementsCount, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"></TextBox>
-                                </StackPanel>
-                            </Grid>
-
-                            <StackPanel x:Name="PutGameMenu" Visibility="Collapsed">
-                                <Label HorizontalAlignment="Center" Content="Name"></Label>
-                                <TextBox x:Name="GameName"  Margin="10,0" Background="White"></TextBox>
-                                <Label HorizontalAlignment="Center" Content="Price"></Label>
-                                <TextBox x:Name="GamePrice"  Margin="10,0" Background="White"></TextBox>
-                                <Label HorizontalAlignment="Center" Content="Achievements Count (optional)"></Label>
-                                <TextBox x:Name="GameAchCount"  Margin="10,0" Background="White"></TextBox>
+                            <StackPanel DataContext="{Binding Test}">
+                                <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Developer ID"></Label>
+                                <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding developerID, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" ></TextBox>
+                                <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Name"></Label>
+                                <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding name, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"></TextBox>
+                                <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Price"></Label>
+                                <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding price, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"></TextBox>
+                                <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Achievements Count (optional)"></Label>
+                                <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding achievementsCount, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"></TextBox>
                             </StackPanel>
                         </Grid>
 

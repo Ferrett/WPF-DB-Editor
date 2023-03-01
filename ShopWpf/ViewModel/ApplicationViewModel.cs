@@ -27,13 +27,14 @@ namespace ShopWpf.ViewModel
     public class ApplicationViewModel : INotifyCollectionChanged, INotifyPropertyChanged
     {
         private ObservableCollection<Developer> _Developers;
-        private Developer _newDeveloper;
+        private dynamic? _test;
 
         private ObservableCollection<Game> _Games;
         private Game _newGame;
 
         private dynamic? _selectedItem;
         private dynamic? _updatedItem;
+        private dynamic? _newItem;
 
         private Visibility _dataGridVisibility;
         private string _getRequestMessage;
@@ -79,12 +80,21 @@ namespace ShopWpf.ViewModel
                 OnPropertyChanged("SelectedItem");
             }
         }
-        public Developer NewDeveloper
+        public dynamic? Test
         {
-            get { return _newDeveloper; }
+            get { return _test; }
             set
             {
-                _newDeveloper = value;
+                _test = value;
+                OnPropertyChanged("Test");
+            }
+        }
+        public dynamic? NewItem
+        {
+            get { return _newItem; }
+            set
+            {
+                _newItem = value;
                 OnPropertyChanged("NewItem");
             }
         }
@@ -199,83 +209,13 @@ namespace ShopWpf.ViewModel
             GetTable(TableNames.Developer);
         }
 
-        private dynamic CopyFromReferenceType(dynamic selectedItem)
-        {
-            switch (SelectedTabItem.Tag)
-            {
-                case TableNames.Developer:
-                    {
-                        return (dynamic)new Developer
-                        {
-                            id = selectedItem.id,
-                            logoURL = selectedItem.logoURL,
-                            name = selectedItem.name,
-                            registrationDate = selectedItem.registrationDate
-                        };
-                    }
-                case TableNames.Game:
-                    {
-                        return (dynamic)new Game
-                        {
-                            id = selectedItem.id,
-                            logoURL = selectedItem.logoURL,
-                            name = selectedItem.name,
-                            price = selectedItem.price,
-                            developerID= selectedItem.developerID,
-                            achievementsCount= selectedItem.achievementsCount,
-                            publishDate= selectedItem.publishDate
-                        };
-                    }
-                case TableNames.GameStats:
-                    {
-                        return (dynamic)new GameStats
-                        {
-                            id = selectedItem.id,
-                            userID = selectedItem.userID,
-                            gameID = selectedItem.gameID,
-                            hoursPlayed = selectedItem.hoursPlayed,
-                            achievementsGot = selectedItem.achievementsGot,
-                            purchasehDate = selectedItem.purchasehDate,
-                            lastLaunchDate = selectedItem.lastLaunchDate
-                        };
-                    }
-                case TableNames.Review:
-                    {
-                        return (dynamic)new Review
-                        {
-                            id = selectedItem.id,
-                            userID = selectedItem.userID,
-                            gameID = selectedItem.gameID,
-                            text = selectedItem.text,
-                            isPositive = selectedItem.isPositive,
-                            creationDate = selectedItem.creationDate,
-                            lastEditDate = selectedItem.lastEditDate
-                        };
-                    }
-                case TableNames.User:
-                    {
-                        return (dynamic)new User
-                        {
-                            id = selectedItem.id,
-                            login = selectedItem.login,
-                            avatarURL = selectedItem.avatarURL,
-                            email = selectedItem.email,
-                            passwordHash = selectedItem.passwordHash,
-                            creationDate = selectedItem.creationDate,
-                            nickame = selectedItem.nickame
-                        };
-                    }
-                default:
-                    return null;
-            }
-           
-        }
+        
 
         public void Init()
         {
             ItemMenuVisibility = Visibility.Collapsed;
             PutPostRequestMessageVisibility = Visibility.Collapsed;
-            NewDeveloper = new Developer();
+            NewItem = new Developer();
             NewGame = new Game();
         }
 
@@ -374,13 +314,13 @@ namespace ShopWpf.ViewModel
             {
                 case TableNames.Developer:
                     {
-                        content = Convert.ToString(NewDeveloper.name);
+                        content = Convert.ToString(NewItem.name);
                         break;
                     }
                 case TableNames.Game:
                     {
-                        content = $"{NewGame.name}/{NewGame.price}/{NewGame.developerID}";
-                        content += NewGame.achievementsCount != null ? $"?achCount={NewGame.achievementsCount}" : null;
+                        content = $"{NewItem.name}/{NewItem.price}/{NewItem.developerID}";
+                        content += NewItem.achievementsCount != null ? $"?achCount={NewItem.achievementsCount}" : null;
                         break;
                     }
                 //case TableNames.GameStats:
@@ -438,11 +378,11 @@ namespace ShopWpf.ViewModel
                     {
                         if (SelectedItem.name != UpdatedItem.name)
                             content.Add(Routes.PutNameRequest, UpdatedItem.name);
-                        if (SelectedItem.price != UpdatedItem.price.ToString())
+                        if (SelectedItem.price.ToString() != UpdatedItem.price.ToString())
                             content.Add(Routes.PutPriceRequest, UpdatedItem.price);
-                        if (SelectedItem.achievementsCount != UpdatedItem.achievementsCount.ToString())
+                        if (SelectedItem.achievementsCount.ToString() != UpdatedItem.achievementsCount.ToString())
                             content.Add(Routes.PutAchievementsCountRequest, UpdatedItem.achievementsCount);
-                        if (SelectedItem.developerID != UpdatedItem.developerID.ToString())
+                        if (SelectedItem.developerID.ToString() != UpdatedItem.developerID.ToString())
                             content.Add(Routes.PutDeveloperRequest, UpdatedItem.developerID.ToString());
                         break;
                     }
@@ -537,6 +477,77 @@ namespace ShopWpf.ViewModel
             PutPostRequestMessage = errorText;
         }
 
+        private dynamic CopyFromReferenceType(dynamic selectedItem)
+        {
+            switch (SelectedTabItem.Tag)
+            {
+                case TableNames.Developer:
+                    {
+                        return (dynamic)new Developer
+                        {
+                            id = selectedItem.id,
+                            logoURL = selectedItem.logoURL,
+                            name = selectedItem.name,
+                            registrationDate = selectedItem.registrationDate
+                        };
+                    }
+                case TableNames.Game:
+                    {
+                        return (dynamic)new Game
+                        {
+                            id = selectedItem.id,
+                            logoURL = selectedItem.logoURL,
+                            name = selectedItem.name,
+                            price = selectedItem.price,
+                            developerID = selectedItem.developerID,
+                            achievementsCount = selectedItem.achievementsCount,
+                            publishDate = selectedItem.publishDate
+                        };
+                    }
+                case TableNames.GameStats:
+                    {
+                        return (dynamic)new GameStats
+                        {
+                            id = selectedItem.id,
+                            userID = selectedItem.userID,
+                            gameID = selectedItem.gameID,
+                            hoursPlayed = selectedItem.hoursPlayed,
+                            achievementsGot = selectedItem.achievementsGot,
+                            purchasehDate = selectedItem.purchasehDate,
+                            lastLaunchDate = selectedItem.lastLaunchDate
+                        };
+                    }
+                case TableNames.Review:
+                    {
+                        return (dynamic)new Review
+                        {
+                            id = selectedItem.id,
+                            userID = selectedItem.userID,
+                            gameID = selectedItem.gameID,
+                            text = selectedItem.text,
+                            isPositive = selectedItem.isPositive,
+                            creationDate = selectedItem.creationDate,
+                            lastEditDate = selectedItem.lastEditDate
+                        };
+                    }
+                case TableNames.User:
+                    {
+                        return (dynamic)new User
+                        {
+                            id = selectedItem.id,
+                            login = selectedItem.login,
+                            avatarURL = selectedItem.avatarURL,
+                            email = selectedItem.email,
+                            passwordHash = selectedItem.passwordHash,
+                            creationDate = selectedItem.creationDate,
+                            nickame = selectedItem.nickame
+                        };
+                    }
+                default:
+                    return null;
+            }
+
+        }
         #region Commands
         private RelayCommand deleteCommand;
         public RelayCommand DeleteCommand
@@ -564,6 +575,39 @@ namespace ShopWpf.ViewModel
                   {
                       PostOptionSelected = true;
                       ItemMenuVisibility = Visibility.Visible;
+                     
+                      switch (SelectedTabItem.Tag)
+                      {
+                          case TableNames.Developer:
+                              {
+                                  NewItem = new Developer();
+                                  break;
+                              }
+                          case TableNames.Game:
+                              {
+                                  NewItem = new Game();
+                                  break;
+                              }
+                          case TableNames.GameStats:
+                              {
+                                  NewItem = new GameStats();
+                                  break;
+                              }
+                          case TableNames.Review:
+                              {
+                                  NewItem = new Review();
+                                  break;
+                              }
+                          case TableNames.User:
+                              {
+                                  NewItem = new User();
+                                  break;
+                              }
+                          default:
+                              break;
+                      }
+                      Test = NewItem;
+
                   }));
             }
         }
@@ -578,6 +622,7 @@ namespace ShopWpf.ViewModel
                   {
                       PostOptionSelected = false;
                       ItemMenuVisibility = Visibility.Visible;
+                      Test = UpdatedItem;
                   }));
             }
         }
@@ -667,12 +712,15 @@ namespace ShopWpf.ViewModel
                 return tabChangedCommand ??
                   (tabChangedCommand = new RelayCommand(async obj =>
                   {
+                      Developers = null;
+                      Games = null;
+                      OpenedImage = null;
+
                       GetRequestMessageVisibility = Visibility.Visible;
                       GetRequestMessage = "Loading...";
                       ItemMenuVisibility = Visibility.Collapsed;
                       
                       GetTable();
-                      OpenedImage = null;
                   }));
             }
         }
