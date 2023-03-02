@@ -27,14 +27,13 @@ namespace ShopWpf.ViewModel
     public class ApplicationViewModel : INotifyCollectionChanged, INotifyPropertyChanged
     {
         private ObservableCollection<Developer> _Developers;
-        private dynamic? _test;
-
         private ObservableCollection<Game> _Games;
-        private Game _newGame;
+        private ObservableCollection<GameStats> _GamesStats;
+        private ObservableCollection<Review> _Reviews;
+        private ObservableCollection<User> _Users;
 
         private dynamic? _selectedItem;
-        private dynamic? _updatedItem;
-        private dynamic? _newItem;
+        private dynamic? _menuItem;
 
         private Visibility _dataGridVisibility;
         private string _getRequestMessage;
@@ -67,6 +66,33 @@ namespace ShopWpf.ViewModel
                 OnPropertyChanged("Games");
             }
         }
+        public ObservableCollection<GameStats> GamesStats
+        {
+            get { return _GamesStats; }
+            set
+            {
+                _GamesStats = value;
+                OnPropertyChanged("GamesStats");
+            }
+        }
+        public ObservableCollection<Review> Reviews
+        {
+            get { return _Reviews; }
+            set
+            {
+                _Reviews = value;
+                OnPropertyChanged("Reviews");
+            }
+        }
+        public ObservableCollection<User> Users
+        {
+            get { return _Users; }
+            set
+            {
+                _Users = value;
+                OnPropertyChanged("Users");
+            }
+        }
         public dynamic? SelectedItem
         {
             get { return _selectedItem; }
@@ -75,38 +101,24 @@ namespace ShopWpf.ViewModel
                 _selectedItem = value;
 
                 if (_selectedItem != null)
-                    UpdatedItem = CopyFromReferenceType(_selectedItem);
+                    MenuItem = CopyFromReferenceType(_selectedItem);
+
+                OpenedImage = null;
 
                 OnPropertyChanged("SelectedItem");
             }
         }
-        public dynamic? Test
+
+        public dynamic? MenuItem
         {
-            get { return _test; }
+            get { return _menuItem; }
             set
             {
-                _test = value;
-                OnPropertyChanged("Test");
+                _menuItem = value;
+                OnPropertyChanged("MenuItem");
             }
         }
-        public dynamic? NewItem
-        {
-            get { return _newItem; }
-            set
-            {
-                _newItem = value;
-                OnPropertyChanged("NewItem");
-            }
-        }
-        public Game NewGame
-        {
-            get { return _newGame; }
-            set
-            {
-                _newGame = value;
-                OnPropertyChanged("NewGame");
-            }
-        }
+        
         public Visibility DataGridVisibility
         {
             get { return _dataGridVisibility; }
@@ -189,18 +201,7 @@ namespace ShopWpf.ViewModel
                 OnPropertyChanged("PostOptionSelected");
             }
         }
-        public dynamic? UpdatedItem
-        {
-            get { return _updatedItem; }
-            set
-            {
-                _updatedItem = value;
-
-                OnPropertyChanged("UpdatedItem");
-            }
-        }
         #endregion
-
 
         public ApplicationViewModel()
         {
@@ -209,14 +210,11 @@ namespace ShopWpf.ViewModel
             GetTable(TableNames.Developer);
         }
 
-        
-
         public void Init()
         {
             ItemMenuVisibility = Visibility.Collapsed;
             PutPostRequestMessageVisibility = Visibility.Collapsed;
-            NewItem = new Developer();
-            NewGame = new Game();
+            MenuItem = new Developer();
         }
 
         public async void GetTable(string a = null)
@@ -257,21 +255,35 @@ namespace ShopWpf.ViewModel
                     }
                 case TableNames.GameStats:
                     {
-                        //List<GameStats> tmpList = new List<GameStats>();
-                        //tmpList.AddRange(JsonSerializer.Deserialize<List<GameStats>>(HttpResponse.Content.ReadAsStringAsync().Result)!);
-                        //Games = new ObservableCollection<GameStats>();
-                        //foreach (var item in tmpList)
-                        //{
-                        //    Games.Add(item);
-                        //}
+                        List<GameStats> tmpList = new List<GameStats>();
+                        tmpList.AddRange(JsonSerializer.Deserialize<List<GameStats>>(HttpResponse.Content.ReadAsStringAsync().Result)!);
+                        GamesStats = new ObservableCollection<GameStats>();
+                        foreach (var item in tmpList)
+                        {
+                            GamesStats.Add(item);
+                        }
                         break;
                     }
                 case TableNames.Review:
                     {
+                        List<Review> tmpList = new List<Review>();
+                        tmpList.AddRange(JsonSerializer.Deserialize<List<Review>>(HttpResponse.Content.ReadAsStringAsync().Result)!);
+                        Reviews = new ObservableCollection<Review>();
+                        foreach (var item in tmpList)
+                        {
+                            Reviews.Add(item);
+                        }
                         break;
                     }
                 case TableNames.User:
                     {
+                        List<User> tmpList = new List<User>();
+                        tmpList.AddRange(JsonSerializer.Deserialize<List<User>>(HttpResponse.Content.ReadAsStringAsync().Result)!);
+                        Users = new ObservableCollection<User>();
+                        foreach (var item in tmpList)
+                        {
+                            Users.Add(item);
+                        }
                         break;
                     }
                 default:
@@ -314,20 +326,20 @@ namespace ShopWpf.ViewModel
             {
                 case TableNames.Developer:
                     {
-                        content = Convert.ToString(NewItem.name);
+                        content = Convert.ToString(MenuItem.name);
                         break;
                     }
                 case TableNames.Game:
                     {
-                        content = $"{NewItem.name}/{NewItem.price}/{NewItem.developerID}";
-                        content += NewItem.achievementsCount != null ? $"?achCount={NewItem.achievementsCount}" : null;
+                        content = $"{MenuItem.name}/{MenuItem.price}/{MenuItem.developerID}";
+                        content += MenuItem.achievementsCount != null ? $"?achCount={MenuItem.achievementsCount}" : null;
                         break;
                     }
-                //case TableNames.GameStats:
-                //    {
-                //        content = $"{GameStatsUserID.Text}/{GameStatsGameID.Text}";
-                //        break;
-                //    }
+                case TableNames.GameStats:
+                    {
+                        //content = $"{GameStatsUserID.Text}/{GameStatsGameID.Text}";
+                        break;
+                    }
                 //case TableNames.Review:
                 //    {
                 //        content = $"{ReviewIsPositive.IsChecked}/{ReviewUserID.Text}/{ReviewGameID.Text}";
@@ -370,20 +382,20 @@ namespace ShopWpf.ViewModel
             {
                 case TableNames.Developer:
                     {
-                        if (SelectedItem.name != UpdatedItem.name)
-                            content.Add(Routes.PutNameRequest, UpdatedItem.name);
+                        if (SelectedItem.name != MenuItem.name)
+                            content.Add(Routes.PutNameRequest, MenuItem.name);
                         break;
                     }
                 case TableNames.Game:
                     {
-                        if (SelectedItem.name != UpdatedItem.name)
-                            content.Add(Routes.PutNameRequest, UpdatedItem.name);
-                        if (SelectedItem.price.ToString() != UpdatedItem.price.ToString())
-                            content.Add(Routes.PutPriceRequest, UpdatedItem.price);
-                        if (SelectedItem.achievementsCount.ToString() != UpdatedItem.achievementsCount.ToString())
-                            content.Add(Routes.PutAchievementsCountRequest, UpdatedItem.achievementsCount);
-                        if (SelectedItem.developerID.ToString() != UpdatedItem.developerID.ToString())
-                            content.Add(Routes.PutDeveloperRequest, UpdatedItem.developerID.ToString());
+                        if (SelectedItem.name != MenuItem.name)
+                            content.Add(Routes.PutNameRequest, MenuItem.name);
+                        if (SelectedItem.price.ToString() != MenuItem.price.ToString())
+                            content.Add(Routes.PutPriceRequest, MenuItem.price);
+                        if (SelectedItem.achievementsCount.ToString() != MenuItem.achievementsCount.ToString())
+                            content.Add(Routes.PutAchievementsCountRequest, MenuItem.achievementsCount);
+                        if (SelectedItem.developerID.ToString() != MenuItem.developerID.ToString())
+                            content.Add(Routes.PutDeveloperRequest, MenuItem.developerID.ToString());
                         break;
                     }
                 //case TableNames.GameStats:
@@ -436,9 +448,9 @@ namespace ShopWpf.ViewModel
             for (int i = 0; i < content.Count; i++)
             {
                 if (content.ElementAt(i).Key == Routes.PutLogoRequest)
-                    requestResponse = await Requests.PutRequest(SelectedTable, content.ElementAt(i).Key, UpdatedItem.id, null, multipartContent);
+                    requestResponse = await Requests.PutRequest(SelectedTable, content.ElementAt(i).Key, MenuItem.id, null, multipartContent);
                 else
-                    requestResponse = await Requests.PutRequest(SelectedTable, content.ElementAt(i).Key, UpdatedItem.id, content.ElementAt(i).Value);
+                    requestResponse = await Requests.PutRequest(SelectedTable, content.ElementAt(i).Key, MenuItem.id, content.ElementAt(i).Value);
 
                 if (requestResponse.StatusCode != HttpStatusCode.OK)
                 {
@@ -513,8 +525,7 @@ namespace ShopWpf.ViewModel
                             gameID = selectedItem.gameID,
                             hoursPlayed = selectedItem.hoursPlayed,
                             achievementsGot = selectedItem.achievementsGot,
-                            purchasehDate = selectedItem.purchasehDate,
-                            lastLaunchDate = selectedItem.lastLaunchDate
+                            purchasehDate = selectedItem.purchasehDate
                         };
                     }
                 case TableNames.Review:
@@ -580,33 +591,33 @@ namespace ShopWpf.ViewModel
                       {
                           case TableNames.Developer:
                               {
-                                  NewItem = new Developer();
+                                  MenuItem = new Developer();
                                   break;
                               }
                           case TableNames.Game:
                               {
-                                  NewItem = new Game();
+                                  MenuItem = new Game();
                                   break;
                               }
                           case TableNames.GameStats:
                               {
-                                  NewItem = new GameStats();
+                                  MenuItem = new GameStats();
                                   break;
                               }
                           case TableNames.Review:
                               {
-                                  NewItem = new Review();
+                                  MenuItem = new Review();
                                   break;
                               }
                           case TableNames.User:
                               {
-                                  NewItem = new User();
+                                  MenuItem = new User();
                                   break;
                               }
                           default:
                               break;
                       }
-                      Test = NewItem;
+                     // Test = NewItem;
 
                   }));
             }
@@ -622,7 +633,7 @@ namespace ShopWpf.ViewModel
                   {
                       PostOptionSelected = false;
                       ItemMenuVisibility = Visibility.Visible;
-                      Test = UpdatedItem;
+                      //Test = UpdatedItem;
                   }));
             }
         }

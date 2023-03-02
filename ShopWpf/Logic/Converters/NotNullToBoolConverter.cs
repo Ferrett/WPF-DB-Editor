@@ -9,7 +9,7 @@ using System.Windows.Data;
 namespace ShopWpf.Logic.Converters
 {
     [ValueConversion(typeof(object), typeof(bool))]
-    public class NotNullToBoolConverter : IValueConverter
+    class NotNullToBoolConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,CultureInfo culture)
         {

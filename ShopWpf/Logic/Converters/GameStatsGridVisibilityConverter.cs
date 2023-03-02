@@ -10,11 +10,11 @@ using System.Globalization;
 namespace ShopWpf.Logic.Converters
 {
     [ValueConversion(typeof(object), typeof(Visibility))]
-    class GameGridVisibilityConverter : IValueConverter
+    class GameStatsGridVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value.ToString() == TableNames.Game ? Visibility.Visible : Visibility.Collapsed;
+            return value.ToString() == TableNames.GameStats ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

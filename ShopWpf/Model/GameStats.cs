@@ -15,7 +15,6 @@ namespace ShopWpf.Models
         private float _hoursPlayed { get; set; }
         private int _achievementsGot { get; set; }
         private DateTime _purchasehDate { get; set; }
-        private DateTime _lastLaunchDate { get; set; }
 
         public int id
         {
@@ -69,15 +68,6 @@ namespace ShopWpf.Models
             {
                 _purchasehDate = value;
                 OnPropertyChanged("purchasehDate");
-            }
-        }
-        public DateTime lastLaunchDate
-        {
-            get { return _lastLaunchDate; }
-            set
-            {
-                _lastLaunchDate = value;
-                OnPropertyChanged("lastLaunchDate");
             }
         }
 
