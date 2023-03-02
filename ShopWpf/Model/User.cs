@@ -12,7 +12,7 @@ namespace ShopWpf.Models
         private int _id { get; set; }
         private string _login { get; set; } = null!;
         private string _passwordHash { get; set; } = null!;
-        private string _nickame { get; set; } = null!;
+        private string _nickname { get; set; } = null!;
         private string _avatarURL { get; set; } = null!;
         private string? _email { get; set; }
         private DateTime _creationDate { get; set; }
@@ -44,13 +44,13 @@ namespace ShopWpf.Models
                 OnPropertyChanged("passwordHash");
             }
         }
-        public string nickame
+        public string nickname
         {
-            get { return _nickame; }
+            get { return _nickname; }
             set
             {
-                _nickame = value;
-                OnPropertyChanged("nickame");
+                _nickname = value;
+                OnPropertyChanged("nickname");
             }
         }
         public string avatarURL

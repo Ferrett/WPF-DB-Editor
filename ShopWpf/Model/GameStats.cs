@@ -14,7 +14,7 @@ namespace ShopWpf.Models
         private int _gameID { get; set; }
         private float _hoursPlayed { get; set; }
         private int _achievementsGot { get; set; }
-        private DateTime _purchasehDate { get; set; }
+        private DateTime _purchaseDate { get; set; }
 
         public int id
         {
@@ -61,13 +61,13 @@ namespace ShopWpf.Models
                 OnPropertyChanged("achievementsGot");
             }
         }
-        public DateTime purchasehDate
+        public DateTime purchaseDate
         {
-            get { return _purchasehDate; }
+            get { return _purchaseDate; }
             set
             {
-                _purchasehDate = value;
-                OnPropertyChanged("purchasehDate");
+                _purchaseDate = value;
+                OnPropertyChanged("purchaseDate");
             }
         }
 

@@ -118,7 +118,7 @@ namespace ShopWpf.ViewModel
                 OnPropertyChanged("MenuItem");
             }
         }
-        
+
         public Visibility DataGridVisibility
         {
             get { return _dataGridVisibility; }
@@ -219,7 +219,7 @@ namespace ShopWpf.ViewModel
 
         public async void GetTable(string a = null)
         {
-            HttpResponseMessage HttpResponse = await Requests.GetRequest(a??SelectedTable);
+            HttpResponseMessage HttpResponse = await Requests.GetRequest(a ?? SelectedTable);
 
             if (HttpResponse.StatusCode != HttpStatusCode.OK)
             {
@@ -337,21 +337,23 @@ namespace ShopWpf.ViewModel
                     }
                 case TableNames.GameStats:
                     {
-                        //content = $"{GameStatsUserID.Text}/{GameStatsGameID.Text}";
+                        content = $"{MenuItem.userID}/{MenuItem.gameID}";
+                        content += MenuItem.achievementsGot != null ? $"?achGot={MenuItem.achievementsGot}" : null;
+                        content += MenuItem.hoursPlayed != null ? $"?hoursPlayed={MenuItem.hoursPlayed}" : null;
                         break;
                     }
-                //case TableNames.Review:
-                //    {
-                //        content = $"{ReviewIsPositive.IsChecked}/{ReviewUserID.Text}/{ReviewGameID.Text}";
-                //        content += ReviewText.Text != string.Empty ? $"?text={ReviewText.Text}" : string.Empty;
-                //        break;
-                //    }
-                //case TableNames.User:
-                //    {
-                //        content = $"{UserLogin.Text}/{UserPassword.Text}/{UserNickname.Text}";
-                //        content += UserEmail.Text != string.Empty ? $"?email={UserEmail.Text}" : string.Empty;
-                //        break;
-                //    }
+                case TableNames.Review:
+                    {
+                        content = $"{MenuItem.isPositive}/{MenuItem.userID}/{MenuItem.gameID}";
+                        content += MenuItem.text != string.Empty ? $"?text={MenuItem.text}" : string.Empty;
+                        break;
+                    }
+                case TableNames.User:
+                    {
+                        content = $"{MenuItem.login}/{MenuItem.passwordHash}/{MenuItem.nickname}";
+                        content += MenuItem.email != string.Empty ? $"?email={MenuItem.email}" : string.Empty;
+                        break;
+                    }
                 default:
                     break;
             }
@@ -364,18 +366,17 @@ namespace ShopWpf.ViewModel
 
         public async Task UpdateSelectedItem()
         {
-            Dictionary<string, string> content = new Dictionary<string, string>();
+            Dictionary<string, object> content = new Dictionary<string, object>();
             MultipartFormDataContent? multipartContent = null;
 
             HttpResponseMessage requestResponse;
             string responseMessage = string.Empty;
 
-
             if (OpenedImage != null)
             {
                 multipartContent = new MultipartFormDataContent();
                 multipartContent.Add(new ByteArrayContent(ImageToHttpContent(OpenedImage)), "logo", "filename");
-                content.Add(Routes.PutLogoRequest, string.Empty);
+                content.Add(Routes.PutLogoRequest, null);
             }
 
             switch (SelectedTabItem.Tag.ToString())
@@ -390,51 +391,50 @@ namespace ShopWpf.ViewModel
                     {
                         if (SelectedItem.name != MenuItem.name)
                             content.Add(Routes.PutNameRequest, MenuItem.name);
-                        if (SelectedItem.price.ToString() != MenuItem.price.ToString())
+                        if (SelectedItem.price != MenuItem.price)
                             content.Add(Routes.PutPriceRequest, MenuItem.price);
-                        if (SelectedItem.achievementsCount.ToString() != MenuItem.achievementsCount.ToString())
+                        if (SelectedItem.achievementsCount != MenuItem.achievementsCount)
                             content.Add(Routes.PutAchievementsCountRequest, MenuItem.achievementsCount);
-                        if (SelectedItem.developerID.ToString() != MenuItem.developerID.ToString())
-                            content.Add(Routes.PutDeveloperRequest, MenuItem.developerID.ToString());
+                        if (SelectedItem.developerID != MenuItem.developerID)
+                            content.Add(Routes.PutDeveloperRequest, MenuItem.developerID);
                         break;
                     }
-                //case TableNames.GameStats:
-                //    {
-                //        GameStats selectedGameStats = (Table[DataGrid.SelectedIndex] as GameStats)!;
-
-                //        if (GameStatsIsGameLaunched.IsChecked == true)
-                //            content.Add(Routes.PutGameLaunchedRequest, string.Empty);
-                //        if (GameStatsGottenAchievements.Text != selectedGameStats.achievementsGot.ToString())
-                //            content.Add(Routes.PutGottenAchievementsRequest, GameStatsGottenAchievements.Text);
-                //        if (GameStatsHoursPlayed.Text != selectedGameStats.hoursPlayed.ToString())
-                //            content.Add(Routes.PutHoursPlayedRequest, GameStatsHoursPlayed.Text);
-                //        break;
-                //    }
-                //case TableNames.Review:
-                //    {
-                //        Review selectedReview = (Table[DataGrid.SelectedIndex] as Review)!;
-
-                //        if (ReviewIsPositive.IsChecked != selectedReview.isPositive)
-                //            content.Add(Routes.PutGameLaunchedRequest, ReviewIsPositive.IsChecked.ToString()!);
-                //        if (ReviewText.Text != selectedReview.text)
-                //            content.Add(Routes.PutTextRequest, ReviewText.Text);
-                //        break;
-                //    }
-                //case TableNames.User:
-                //    {
-                //        User selectedUser = (Table[DataGrid.SelectedIndex] as User)!;
-
-                //        if (UserEmail.Text != selectedUser.email)
-                //            content.Add(Routes.PutEmailRequest, UserEmail.Text);
-                //        if (UserNickname.Text != selectedUser.nickame)
-                //            content.Add(Routes.PutNicknameRequest, UserNickname.Text);
-                //        if (UserLogin.Text != selectedUser.login)
-                //            content.Add(Routes.PutNicknameRequest, UserLogin.Text);
-                //        if (UserPassword.Text != selectedUser.passwordHash)
-                //            content.Add(Routes.PutNicknameRequest, UserPassword.Text);
-
-                //        break;
-                //    }
+                case TableNames.GameStats:
+                    {
+                        if (SelectedItem.userID != MenuItem.userID)
+                            content.Add(Routes.PutUserRequest, MenuItem.userID);
+                        if (SelectedItem.gameID != MenuItem.gameID)
+                            content.Add(Routes.PutGameRequest, MenuItem.gameID);
+                        if (SelectedItem.achievementsGot != MenuItem.achievementsGot)
+                            content.Add(Routes.PutGottenAchievementsRequest, MenuItem.achievementsGot);
+                        if (SelectedItem.hoursPlayed != MenuItem.hoursPlayed)
+                            content.Add(Routes.PutHoursPlayedRequest, MenuItem.hoursPlayed);
+                        break;
+                    }
+                case TableNames.Review:
+                    {
+                        if (SelectedItem.userID != MenuItem.userID)
+                            content.Add(Routes.PutUserRequest, MenuItem.userID);
+                        if (SelectedItem.gameID != MenuItem.gameID)
+                            content.Add(Routes.PutGameRequest, MenuItem.gameID);
+                        if (SelectedItem.isPositive != MenuItem.isPositive)
+                            content.Add(Routes.PutApprovalRequest, MenuItem.isPositive);
+                        if (SelectedItem.text != MenuItem.text)
+                            content.Add(Routes.PutTextRequest, MenuItem.text);
+                        break;
+                    }
+                case TableNames.User:
+                    {
+                        if (SelectedItem.email != MenuItem.email)
+                            content.Add(Routes.PutEmailRequest, MenuItem.Text);
+                        if (SelectedItem.nickname != MenuItem.nickname)
+                            content.Add(Routes.PutNicknameRequest, MenuItem.nickname);
+                        if (SelectedItem.login != MenuItem.login)
+                            content.Add(Routes.PutLoginRequest, MenuItem.login);
+                        if (SelectedItem.passwordHash != MenuItem.passwordHash)
+                            content.Add(Routes.PutPasswordRequest, MenuItem.passwordHash);
+                        break;
+                    }
                 default:
                     break;
             }
@@ -450,7 +450,7 @@ namespace ShopWpf.ViewModel
                 if (content.ElementAt(i).Key == Routes.PutLogoRequest)
                     requestResponse = await Requests.PutRequest(SelectedTable, content.ElementAt(i).Key, MenuItem.id, null, multipartContent);
                 else
-                    requestResponse = await Requests.PutRequest(SelectedTable, content.ElementAt(i).Key, MenuItem.id, content.ElementAt(i).Value);
+                    requestResponse = await Requests.PutRequest(SelectedTable, content.ElementAt(i).Key, MenuItem.id, content.ElementAt(i).Value.ToString());
 
                 if (requestResponse.StatusCode != HttpStatusCode.OK)
                 {
@@ -464,9 +464,6 @@ namespace ShopWpf.ViewModel
             }
             else
                 ShowRequestLog(responseMessage);
-
-
-
         }
 
         public byte[] ImageToHttpContent(BitmapImage img)
@@ -525,7 +522,7 @@ namespace ShopWpf.ViewModel
                             gameID = selectedItem.gameID,
                             hoursPlayed = selectedItem.hoursPlayed,
                             achievementsGot = selectedItem.achievementsGot,
-                            purchasehDate = selectedItem.purchasehDate
+                            purchaseDate = selectedItem.purchaseDate
                         };
                     }
                 case TableNames.Review:
@@ -551,7 +548,7 @@ namespace ShopWpf.ViewModel
                             email = selectedItem.email,
                             passwordHash = selectedItem.passwordHash,
                             creationDate = selectedItem.creationDate,
-                            nickame = selectedItem.nickame
+                            nickname = selectedItem.nickame
                         };
                     }
                 default:
@@ -571,7 +568,6 @@ namespace ShopWpf.ViewModel
                       HideTable();
                       await DeleteSelectedItem();
                       GetTable();
-
                   }));
             }
         }
@@ -586,7 +582,7 @@ namespace ShopWpf.ViewModel
                   {
                       PostOptionSelected = true;
                       ItemMenuVisibility = Visibility.Visible;
-                     
+
                       switch (SelectedTabItem.Tag)
                       {
                           case TableNames.Developer:
@@ -617,8 +613,6 @@ namespace ShopWpf.ViewModel
                           default:
                               break;
                       }
-                     // Test = NewItem;
-
                   }));
             }
         }
@@ -633,7 +627,6 @@ namespace ShopWpf.ViewModel
                   {
                       PostOptionSelected = false;
                       ItemMenuVisibility = Visibility.Visible;
-                      //Test = UpdatedItem;
                   }));
             }
         }
@@ -676,7 +669,7 @@ namespace ShopWpf.ViewModel
                       HideTable();
                       await PostNewItem();
                       GetTable();
-                      
+
                   }));
             }
         }
@@ -725,12 +718,16 @@ namespace ShopWpf.ViewModel
                   {
                       Developers = null;
                       Games = null;
+                      GamesStats = null;
+                      Reviews = null;
+                      Users = null;
+
                       OpenedImage = null;
 
                       GetRequestMessageVisibility = Visibility.Visible;
                       GetRequestMessage = "Loading...";
                       ItemMenuVisibility = Visibility.Collapsed;
-                      
+
                       GetTable();
                   }));
             }
