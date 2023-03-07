@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ShopWpf.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -13,6 +14,6 @@ namespace ShopWpf
     /// </summary>
     public partial class App : Application
     {
-
+       
     }
 }

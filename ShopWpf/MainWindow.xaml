@@ -3,110 +3,46 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ShopWpf"
         xmlns:logic="clr-namespace:ShopWpf.Logic"
+        xmlns:cnv="clr-namespace:ShopWpf.Logic.Converters"
+        xmlns:beh="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
-        Title="Api Controller" MaxHeight="800" MinHeight="500"  SizeToContent="Height"  Width="1100">
+        Title="Api Controller" MinHeight="800" SizeToContent="Height" Width="1300">
+
+    <Window.Resources>
+        <cnv:NotNullToBoolConverter x:Key="NotNullToBool"/>
+        <cnv:NotNullToVisibilityConverter x:Key="NotNullToVisibility"/>
+        <cnv:UrlToBitmapImageConverter x:Key="UrlToBitmapImage"/>
+        <cnv:PutOptionToVisibilityConverter x:Key="PutOptionToVisibility"/>
+        <cnv:PostOptionToVisibilityConverter x:Key="PostOptionToVisibility"/>
+        <cnv:VisibilityToBoolConverter x:Key="VisibilityToBool"/>
+        <cnv:DeveloperGridVisibilityConverter x:Key="DeveloperGridVisibility"/>
+        <cnv:GameGridVisibilityConverter x:Key="GameGridVisibility"/>
+        <cnv:GameStatsGridVisibilityConverter x:Key="GameStatsGridVisibility"/>
+        <cnv:ReviewGridVisibilityConverter x:Key="ReviewGridVisibility"/>
+        <cnv:UserGridToVisibilityConverter x:Key="UserGridVisibility"/>
+        <cnv:ImageVisibilityConverter x:Key="ImageVisibility"/>
+
+        <Style x:Key="ItemMenuLabelStyle" TargetType="Label">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="ItemMenuTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Margin" Value="10,0"/>
+        </Style>
+
+        <BitmapImage x:Key="LoadingImage" UriSource="/Resources/loading.png" />
+        <BitmapImage x:Key="DefaultImage" UriSource="/Resources/default.png" />
+
+    </Window.Resources>
 
     <Grid Background="#FFE5E5E5">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
             <ColumnDefinition Width="auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <Border x:Name="ItemMenuGet" MaxWidth="222" Grid.Column="0" BorderBrush="Black"  BorderThickness="0,0,2,0" Visibility="Collapsed">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"></RowDefinition>
-                    <RowDefinition Height="auto"></RowDefinition>
-                    <RowDefinition Height="*"></RowDefinition>
-                </Grid.RowDefinitions>
-
-                <StackPanel x:Name="ItemIDMenuGet" Grid.Row="0" Visibility="Collapsed">
-                    <Label HorizontalAlignment="Center" Content="ID"></Label>
-                    <TextBox x:Name="ItemIDGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
-                    <Line X1="0" X2="220" Stroke="Black" Margin="0,20,0,0"></Line>
-                </StackPanel>
-
-
-                <StackPanel Grid.Row="1">
-                    <StackPanel x:Name="LogoMenuGet" Visibility="Visible">
-                        <Label HorizontalAlignment="Center" Content="Logo"></Label>
-                        <Grid>
-                            <Image x:Name="LogoDefaultGet"  Stretch="UniformToFill" Height="auto" Margin="10,0,10,0" Source="C:\Users\admin\Desktop\Dummy.png"></Image>
-                            <Image x:Name="LogoGet"  Stretch="UniformToFill" Height="auto" Margin="10,0,10,0"></Image>
-                        </Grid>
-                        <Line X1="0" X2="220" Stroke="Black" Margin="0,20,0,0"></Line>
-                    </StackPanel>
-
-                    <StackPanel x:Name="DeveloperMenuGet" Visibility="Collapsed">
-                        <Label HorizontalAlignment="Center" Content="Name"></Label>
-                        <TextBox x:Name="DeveloperNameGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
-                        <Label HorizontalAlignment="Center" Content="RegistrationDate"></Label>
-                        <TextBox x:Name="DeveloperRegistrationDateGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
-                    </StackPanel>
-
-                    <StackPanel x:Name="GameMenuGet" Visibility="Collapsed">
-                        <Label HorizontalAlignment="Center" Content="Developer ID"></Label>
-                        <TextBox x:Name="GameDevIDGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
-                        <Label HorizontalAlignment="Center" Content="Name"></Label>
-                        <TextBox x:Name="GameNameGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
-                        <Label HorizontalAlignment="Center" Content="Price"></Label>
-                        <TextBox x:Name="GamePriceGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
-                        <Label HorizontalAlignment="Center" Content="Achievements Count"></Label>
-                        <TextBox x:Name="GameAchCountGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
-                        <Label HorizontalAlignment="Center" Content="PublishDate"></Label>
-                        <TextBox x:Name="GamePublishDateGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
-                    </StackPanel>
-
-                    <StackPanel x:Name="GameStatsMenuGet" Visibility="Collapsed">
-                        <Label HorizontalAlignment="Center" Content="User ID"></Label>
-                        <TextBox x:Name="GameStatsUserIDGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
-                        <Label HorizontalAlignment="Center" Content="Game ID"></Label>
-                        <TextBox x:Name="GameStatsGameIDGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
-                        <Label HorizontalAlignment="Center" Content="Gotten Achievements"></Label>
-                        <TextBox x:Name="GameStatsGottenAchievementsGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
-                        <Label HorizontalAlignment="Center" Content="Hours Played"></Label>
-                        <TextBox x:Name="GameStatsHoursPlayedGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
-                    </StackPanel>
-
-                    <StackPanel x:Name="ReviewMenuGet" Visibility="Collapsed">
-                        <Label HorizontalAlignment="Center" Content="Game ID"></Label>
-                        <TextBox x:Name="ReviewGameIDGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
-                        <Label HorizontalAlignment="Center" Content="User ID"></Label>
-                        <TextBox x:Name="ReviewUserIDGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
-                        <CheckBox x:Name="ReviewIsPositiveGet" HorizontalAlignment="Center"  Margin="0,10" Content="Is Positive" IsHitTestVisible="False" Focusable="False"></CheckBox>
-                        <Label HorizontalAlignment="Center" Content="Text"></Label>
-                        <TextBox x:Name="ReviewTextGet"  Margin="10,0" Background="White" TextWrapping="Wrap"  IsReadOnly="True"></TextBox>
-                        <Label HorizontalAlignment="Center" Content="Creation Date"></Label>
-                        <TextBox x:Name="ReviewCreationDateGet"  Margin="10,0" Background="White" TextWrapping="Wrap"  IsReadOnly="True"></TextBox>
-                        <Label HorizontalAlignment="Center" Content="Last Edit Date"></Label>
-                        <TextBox x:Name="ReviewLastEditDateGet"  Margin="10,0" Background="White" TextWrapping="Wrap"  IsReadOnly="True"></TextBox>
-                    </StackPanel>
-
-                    <StackPanel x:Name="UserMenuGet" Visibility="Collapsed">
-                        <Label HorizontalAlignment="Center" Content="Login"></Label>
-                        <TextBox x:Name="UserLoginGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
-                        <Label HorizontalAlignment="Center" Content="Password"></Label>
-                        <TextBox x:Name="UserPasswordGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
-                        <Label HorizontalAlignment="Center" Content="Nickname"></Label>
-                        <TextBox x:Name="UserNicknameGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
-                        <Label HorizontalAlignment="Center" Content="Email"></Label>
-                        <TextBox x:Name="UserEmailGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
-                        <Label HorizontalAlignment="Center" Content="Creation Date"></Label>
-                        <TextBox x:Name="UserCreationDateGet"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
-                    </StackPanel>
-                </StackPanel>
-
-                <StackPanel Grid.Row="2"  VerticalAlignment="Bottom">
-                    <Line X1="0" X2="220" Margin="0,10,0,0" Stroke="Black"></Line>
-                    <Button x:Name="GetMenuCloseBtn" Click="GetMenuCloseBtn_Click" Height="30" Margin="10,10,10,10" Background="Red" Content="Close"></Button>
-                </StackPanel>
-            </Grid>
-        </Border>
-
-        <Grid Grid.Column="1">
+        <Grid Visibility="Visible" Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" ></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
@@ -115,145 +51,209 @@
             <Grid Grid.Column="0" Grid.Row="0" Background="White">
                 <StackPanel>
                     <Grid Background="#FFE5E5E5">
-                        <TabControl x:Name="TabControl" BorderThickness="0" SelectionChanged="TabControl_SelectionChanged">
-                            <TabItem Tag="{Binding Source={x:Static logic:TableNames.Developer}}" Height="30" Padding="10,0,10,0" Header="Developers"></TabItem>
-                            <TabItem Tag="{Binding Source={x:Static logic:TableNames.Game}}" Height="30" Padding="10,0,10,0" Header="Games"></TabItem>
-                            <TabItem Tag="{Binding Source={x:Static logic:TableNames.GameStats}}" Height="30" Padding="10,0,10,0" Header="GamesStats"></TabItem>
-                            <TabItem Tag="{Binding Source={x:Static logic:TableNames.Review}}" Height="30" Padding="10,0,10,0" Header="Reviews"></TabItem>
-                            <TabItem Tag="{Binding Source={x:Static logic:TableNames.User}}" Height="30" Padding="10,0,10,0" Header="Users"></TabItem>
+                        <TabControl BorderThickness="0" SelectedItem="{Binding SelectedTabItem, UpdateSourceTrigger=PropertyChanged,Mode=OneWayToSource}">
+                            <beh:Interaction.Triggers>
+                                <beh:EventTrigger EventName="SelectionChanged">
+                                    <beh:InvokeCommandAction Command="{Binding TabChangedCommand}" />
+                                </beh:EventTrigger>
+                            </beh:Interaction.Triggers>
+
+                            <TabItem Tag="{Binding Source={x:Static logic:TableNames.Developer}}" IsSelected="True" Height="30" Padding="10,0,10,0" Header="{Binding Source={x:Static logic:TableNames.Developer}}"></TabItem>
+                            <TabItem Tag="{Binding Source={x:Static logic:TableNames.Game}}"      Height="30" Padding="10,0,10,0" Header="{Binding Source={x:Static logic:TableNames.Game}}"></TabItem>
+                            <TabItem Tag="{Binding Source={x:Static logic:TableNames.GameStats}}" Height="30" Padding="10,0,10,0" Header="{Binding Source={x:Static logic:TableNames.GameStats}}"></TabItem>
+                            <TabItem Tag="{Binding Source={x:Static logic:TableNames.Review}}"    Height="30" Padding="10,0,10,0" Header="{Binding Source={x:Static logic:TableNames.Review}}"></TabItem>
+                            <TabItem Tag="{Binding Source={x:Static logic:TableNames.User}}"      Height="30" Padding="10,0,10,0" Header="{Binding Source={x:Static logic:TableNames.User}}"></TabItem>
                         </TabControl>
-
-                        <Button x:Name="RefreshBtn" Click="RefreshBtn_Click" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,0,0,0" Width="30" Height="30" Content="⭯"></Button>
+                        <Button Command="{Binding RefreshCommand}" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,0,0,0" Width="30" Height="30" Content="⭯"></Button>
                     </Grid>
 
-                    <Grid>
-                        <DataGrid x:Name="DataGrid" SelectionChanged="DataGrid_SelectionChanged" MaxHeight="600" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" Visibility="Collapsed" ColumnWidth="*"/>
-                        <Label x:Name="ErrorText" VerticalAlignment="Top" HorizontalAlignment="Center" Content="Loading..."></Label>
+                    <Grid Visibility="{Binding SelectedTabItem.Tag, Converter={StaticResource DeveloperGridVisibility},UpdateSourceTrigger=PropertyChanged}">
+                        <DataGrid Visibility="{Binding DataGridVisibility}" IsReadOnly="True" ItemsSource="{Binding Developers, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedItem}"  MaxHeight="600" AutoGenerateColumns="False" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" CanUserAddRows="False" CanUserDeleteRows="False" >
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Width="*" Header="ID" Binding="{Binding id, UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Width="*" Header="Name" Binding="{Binding name, UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Width="*" Header="Logo URL" Binding="{Binding logoURL, UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Width="*" Header="Registration Date" Binding="{Binding registrationDate, UpdateSourceTrigger=PropertyChanged}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
                     </Grid>
+
+                    <Grid Visibility="{Binding SelectedTabItem.Tag, Converter={StaticResource GameGridVisibility},UpdateSourceTrigger=PropertyChanged}">
+                        <DataGrid Visibility="{Binding DataGridVisibility}" IsReadOnly="True" ItemsSource="{Binding Games, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedItem}"  MaxHeight="600" AutoGenerateColumns="False" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" CanUserAddRows="False" CanUserDeleteRows="False" >
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Width="*" Header="ID" Binding="{Binding id, UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Width="*" Header="Name" Binding="{Binding name, UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Width="*" Header="Logo URL" Binding="{Binding logoURL, UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Width="*" Header="Price" Binding="{Binding price, UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Width="*" Header="Developer ID" Binding="{Binding developerID, UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Width="*" Header="Publish Date" Binding="{Binding publishDate, UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Width="*" Header="Achievements Count" Binding="{Binding achievementsCount, UpdateSourceTrigger=PropertyChanged}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+
+                    <Grid Visibility="{Binding SelectedTabItem.Tag, Converter={StaticResource GameStatsGridVisibility},UpdateSourceTrigger=PropertyChanged}">
+                        <DataGrid Visibility="{Binding DataGridVisibility}" IsReadOnly="True" ItemsSource="{Binding GamesStats, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedItem}"  MaxHeight="600" AutoGenerateColumns="False" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" CanUserAddRows="False" CanUserDeleteRows="False" >
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Width="*" Header="ID" Binding="{Binding id, UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Width="*" Header="User ID" Binding="{Binding userID, UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Width="*" Header="Game ID" Binding="{Binding gameID, UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Width="*" Header="Hours Played" Binding="{Binding hoursPlayed, UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Width="*" Header="Gotten Achievements " Binding="{Binding achievementsGot, UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Width="*" Header="Purchase Date" Binding="{Binding purchaseDate, UpdateSourceTrigger=PropertyChanged}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+
+                    <Grid Visibility="{Binding SelectedTabItem.Tag, Converter={StaticResource ReviewGridVisibility},UpdateSourceTrigger=PropertyChanged}">
+                        <DataGrid Visibility="{Binding DataGridVisibility}" IsReadOnly="True" ItemsSource="{Binding Reviews, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedItem}"  MaxHeight="600" AutoGenerateColumns="False" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" CanUserAddRows="False" CanUserDeleteRows="False" >
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Width="*" Header="ID" Binding="{Binding id, UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Width="*" Header="Text" Binding="{Binding text, UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Width="*" Header="Is Positive" Binding="{Binding isPositive, UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Width="*" Header="Creation Date" Binding="{Binding creationDate, UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Width="*" Header="Last Edit Date" Binding="{Binding lastEditDate, UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Width="*" Header="Game ID" Binding="{Binding gameID, UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Width="*" Header="User ID" Binding="{Binding userID, UpdateSourceTrigger=PropertyChanged}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+
+                    <Grid Visibility="{Binding SelectedTabItem.Tag, Converter={StaticResource UserGridVisibility},UpdateSourceTrigger=PropertyChanged}">
+                        <DataGrid Visibility="{Binding DataGridVisibility}" IsReadOnly="True" ItemsSource="{Binding Users, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedItem}"  MaxHeight="600" AutoGenerateColumns="False" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" CanUserAddRows="False" CanUserDeleteRows="False" >
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Width="*" Header="ID" Binding="{Binding id, UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Width="*" Header="Login" Binding="{Binding login, UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Width="*" Header="Password Hash" Binding="{Binding passwordHash, UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Width="*" Header="Nickame" Binding="{Binding nickname, UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Width="*" Header="Avatar URL" Binding="{Binding avatarURL, UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Width="*" Header="Email" Binding="{Binding email, UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Width="*" Header="Creation Date" Binding="{Binding creationDate, UpdateSourceTrigger=PropertyChanged}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+
+                    <Label Visibility="{Binding GetRequestMessageVisibility}" VerticalAlignment="Top" HorizontalAlignment="Center" Content="{Binding GetRequestMessage}"></Label>
                 </StackPanel>
             </Grid>
 
-            <Grid x:Name="CRUDButtons" MinHeight="40" Margin="0,0,0,10" Grid.Column="0" Grid.Row="1" Visibility="Visible">
+            <Grid MinHeight="40" Margin="0,0,0,10" Grid.Column="0" Grid.Row="1" Visibility="{Binding DataGridVisibility}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition></ColumnDefinition>
                     <ColumnDefinition></ColumnDefinition>
                     <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Button x:Name="GetBtn" IsEnabled="False" Margin="10,0,10,0" Grid.Column="0" Grid.Row="0" Width="auto" Height="30" VerticalAlignment="Bottom" Background="Cyan" Click="Get_Click" Content="Get"></Button>
-                <Button x:Name="PostBtn" Margin="10,0,10,0" Grid.Column="1" Grid.Row="0" Width="auto" Height="30" VerticalAlignment="Bottom" Background="Lime" Click="Post_Click" Content="Post"></Button>
-                <Button x:Name="PutBtn" IsEnabled="False" Margin="10,0,10,0" Grid.Column="2" Grid.Row="0" Width="auto" Height="30" VerticalAlignment="Bottom" Background="Orange" Click="Put_Click" Content="Put"></Button>
-                <Button x:Name="DeleteBtn" IsEnabled="False" Margin="10,0,10,0" Grid.Column="3" Grid.Row="0" Width="auto" Height="30" VerticalAlignment="Bottom" Background="red" Click="Delete_Click" Content="Delete"></Button>
+                <Button x:Name="PostBtn" Margin="10,0,10,0" Grid.Column="0" Grid.Row="0" Width="auto" Height="30" VerticalAlignment="Bottom" Background="Lime"  Content="Post" Command="{Binding PostCommand}"></Button>
+                <Button x:Name="PutBtn" IsEnabled="{Binding SelectedItem, Converter={StaticResource NotNullToBool}, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,10,0" Grid.Column="1" Grid.Row="0" Width="auto" Height="30" VerticalAlignment="Bottom" Background="Orange" Content="Put" Command="{Binding PutCommand}" ></Button>
+                <Button x:Name="DeleteBtn" IsEnabled="{Binding SelectedItem, Converter={StaticResource NotNullToBool}, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,10,0" Grid.Column="2" Grid.Row="0" Width="auto" Height="30" VerticalAlignment="Bottom" Background="red" Content="Delete" Command="{Binding DeleteCommand}"></Button>
             </Grid>
         </Grid>
 
-        <Border x:Name="ItemMenu" Grid.Column="2" BorderBrush="Black" MaxWidth="222"  BorderThickness="2,0,0,0" Visibility="Collapsed" IsVisibleChanged="ItemMenu_IsVisibleChanged">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"></RowDefinition>
-                    <RowDefinition Height="auto"></RowDefinition>
-                    <RowDefinition Height="auto"></RowDefinition>
-                    <RowDefinition Height="*"></RowDefinition>
-                </Grid.RowDefinitions>
+        <Grid x:Name="ItemMenu" Grid.Column="2" MaxWidth="222" Visibility="{Binding ItemMenuVisibility}">
+            <Border BorderBrush="Black" BorderThickness="2,0,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"></RowDefinition>
+                        <RowDefinition Height="auto"></RowDefinition>
+                        <RowDefinition Height="auto"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
 
-                <StackPanel x:Name="ItemIDMenu" Grid.Row="0" Visibility="Collapsed">
-                    <Label HorizontalAlignment="Center" Content="ID"></Label>
-                    <TextBox x:Name="ItemID"  Margin="10,0" Background="White" IsReadOnly="True"></TextBox>
-                    <Line X1="0" X2="220" Stroke="Black" Margin="0,20,0,0"></Line>
-                </StackPanel>
+                    <StackPanel x:Name="ItemIDMenu" Grid.Row="0" Visibility="{Binding PostOptionSelected, Converter={StaticResource PutOptionToVisibility}, UpdateSourceTrigger=PropertyChanged}">
+                        <Label HorizontalAlignment="Center" DataContext="{Binding SelectedItem}" ContentStringFormat="ID: {0}" Content="{Binding id, UpdateSourceTrigger=PropertyChanged}"></Label>
+                        <Line X1="0" X2="220" Stroke="Black" Margin="0,0,0,0"></Line>
+                    </StackPanel>
 
-                <StackPanel Grid.Row="1">
-                    <StackPanel x:Name="LogoMenu" Visibility="Collapsed">
-                        <Label HorizontalAlignment="Center" Content="Logo"></Label>
-                        <Grid>
-                            <Image x:Name="LogoDefault" Stretch="UniformToFill" Height="auto" Margin="10,0,10,0" Source="C:\Users\admin\Desktop\Dummy.png"></Image>
-                            <Image x:Name="Logo" Stretch="UniformToFill" Height="auto" Margin="10,0,10,0"></Image>
+                    <StackPanel Grid.Row="1">
+                        <StackPanel x:Name="LogoMenu" Visibility="{Binding SelectedTabItem.Tag, Converter={StaticResource ImageVisibility},UpdateSourceTrigger=PropertyChanged}">
+                            <Label HorizontalAlignment="Center" Content="Logo"></Label>
+                            <Grid>
+                                <Image Visibility="{Binding PostOptionSelected, Converter={StaticResource PutOptionToVisibility},UpdateSourceTrigger=PropertyChanged}" Stretch="UniformToFill" Height="200" Margin="10,0,10,0" Source="{StaticResource LoadingImage}" ></Image>
+                                <Grid Visibility="{Binding PostOptionSelected, Converter={StaticResource PutOptionToVisibility},UpdateSourceTrigger=PropertyChanged}">
+                                    <Image  DataContext="{Binding SelectedItem}" Stretch="UniformToFill" Height="200" Margin="10,0,10,0" Source="{Binding logoURL,Converter={StaticResource UrlToBitmapImage}}"></Image>
+                                </Grid>
+                                <Image Visibility="{Binding PostOptionSelected, Converter={StaticResource PostOptionToVisibility},UpdateSourceTrigger=PropertyChanged}" Stretch="UniformToFill" Height="200" Margin="10,0,10,0" Source="{StaticResource DefaultImage}" ></Image>
+                                <Image Visibility="Visible" Stretch="UniformToFill" Height="200" Margin="10,0,10,0" Source="{Binding OpenedImage, Mode=OneWay}"></Image>
+                            </Grid>
+                            <Button Command="{Binding OpenImageFromFileCommand}" IsEnabled="{Binding DataGridVisibility, Converter={StaticResource VisibilityToBool}, UpdateSourceTrigger=PropertyChanged}" Margin="10,10,10,0" Height="30" Content="Open..."></Button>
+                            <Line X1="0" X2="220" Stroke="Black" Margin="0,20,0,0"></Line>
+                        </StackPanel>
+
+                        <Grid Visibility="{Binding SelectedTabItem.Tag, Converter={StaticResource DeveloperGridVisibility},UpdateSourceTrigger=PropertyChanged}">
+                            <StackPanel DataContext="{Binding MenuItem}">
+                                <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Name" />
+                                <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding name, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                            </StackPanel>
                         </Grid>
-                        <Button x:Name="SelectImageBtn" Margin="10,10,10,0" Height="30" Content="Open..." Click="Button_Click"></Button>
-                        <Line X1="0" X2="220" Stroke="Black" Margin="0,20,0,0"></Line>
+
+                        <Grid Visibility="{Binding SelectedTabItem.Tag, Converter={StaticResource GameGridVisibility},UpdateSourceTrigger=PropertyChanged}">
+                            <StackPanel DataContext="{Binding MenuItem}">
+                                <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Developer ID"></Label>
+                                <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding developerID, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" ></TextBox>
+                                <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Name"></Label>
+                                <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding name, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"></TextBox>
+                                <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Price"></Label>
+                                <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding price, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"></TextBox>
+                                <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Achievements Count (optional)"></Label>
+                                <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding achievementsCount, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"></TextBox>
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Visibility="{Binding SelectedTabItem.Tag, Converter={StaticResource GameStatsGridVisibility},UpdateSourceTrigger=PropertyChanged}">
+                            <StackPanel DataContext="{Binding MenuItem}">
+                                <Label Style="{StaticResource ItemMenuLabelStyle}" Content="User ID"></Label>
+                                <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding userID, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" ></TextBox>
+                                <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Game ID"></Label>
+                                <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding gameID, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"></TextBox>
+                                <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Hours Played (optional)"></Label>
+                                <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding hoursPlayed, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"></TextBox>
+                                <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Gotten Achievements (optional)"></Label>
+                                <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding achievementsGot, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"></TextBox>
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Visibility="{Binding SelectedTabItem.Tag, Converter={StaticResource ReviewGridVisibility},UpdateSourceTrigger=PropertyChanged}">
+                            <StackPanel DataContext="{Binding MenuItem}">
+                                
+                                <CheckBox Margin="10,10" Content="Positive" HorizontalAlignment="Center" IsChecked="{Binding isPositive, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"></CheckBox>
+                                <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Game ID"></Label>
+                                <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding gameID, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"></TextBox>
+                                <Label Style="{StaticResource ItemMenuLabelStyle}" Content="User ID"></Label>
+                                <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding userID, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Text (optional)"></Label>
+                                <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding text, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" TextWrapping="Wrap" ></TextBox>
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Visibility="{Binding SelectedTabItem.Tag, Converter={StaticResource UserGridVisibility},UpdateSourceTrigger=PropertyChanged}">
+                            <StackPanel DataContext="{Binding MenuItem}">
+                                <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Login"></Label>
+                                <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding login, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" TextWrapping="Wrap" ></TextBox>
+                                <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Password"></Label>
+                                <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding passwordHash, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"></TextBox>
+                                <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Nickname"></Label>
+                                <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding nickname, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"></TextBox>
+                                <Label Style="{StaticResource ItemMenuLabelStyle}" Content="Email (optional)"></Label>
+                                <TextBox Style="{StaticResource ItemMenuTextBoxStyle}" Text="{Binding email, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"></TextBox>
+                            </StackPanel>
+                        </Grid>
+
                     </StackPanel>
 
-                    <StackPanel x:Name="DeveloperMenu" Visibility="Collapsed">
-                        <Label HorizontalAlignment="Center" Content="Name"></Label>
-                        <TextBox x:Name="DeveloperName"  Margin="10,0" Background="White"></TextBox>
+                    <StackPanel Visibility="{Binding PutPostRequestMessageVisibility}" Grid.Row="2" VerticalAlignment="Bottom">
+                        <Line X1="0" X2="220" Stroke="Black" Margin="0,10,0,10"></Line>
+                        <TextBlock Text="{Binding PutPostRequestMessage, UpdateSourceTrigger=PropertyChanged}" TextAlignment="Center" Background="White" Height="auto" Margin="10,0" Visibility="Visible" TextWrapping="Wrap"></TextBlock>
                     </StackPanel>
 
-                    <StackPanel>
-                        <StackPanel x:Name="PostGameMenu" Visibility="Collapsed">
-                            <Label HorizontalAlignment="Center" Content="Developer ID"></Label>
-                            <TextBox x:Name="GameDevID"  Margin="10,0" Background="White"></TextBox>
-                        </StackPanel>
-
-                        <StackPanel x:Name="PutGameMenu" Visibility="Collapsed">
-                            <Label HorizontalAlignment="Center" Content="Name"></Label>
-                            <TextBox x:Name="GameName"  Margin="10,0" Background="White"></TextBox>
-                            <Label HorizontalAlignment="Center" Content="Price"></Label>
-                            <TextBox x:Name="GamePrice"  Margin="10,0" Background="White"></TextBox>
-                            <Label HorizontalAlignment="Center" Content="Achievements Count (optional)"></Label>
-                            <TextBox x:Name="GameAchCount"  Margin="10,0" Background="White"></TextBox>
-                        </StackPanel>
+                    <StackPanel Grid.Row="3"  VerticalAlignment="Bottom">
+                        <Line X1="0" X2="220" Margin="0,10,0,0" Stroke="Black"></Line>
+                        <Button Visibility="{Binding PostOptionSelected, Converter={StaticResource PostOptionToVisibility},UpdateSourceTrigger=PropertyChanged}" Command="{Binding PostItemCommand}"  IsEnabled="{Binding DataGridVisibility, Converter={StaticResource VisibilityToBool}, UpdateSourceTrigger=PropertyChanged}" Height="30" Margin="10,10,10,10" Background="Lime" Content="Submit"></Button>
+                        <Button Visibility="{Binding PostOptionSelected, Converter={StaticResource PutOptionToVisibility},UpdateSourceTrigger=PropertyChanged}" Command="{Binding UpdateItemCommand}" IsEnabled="{Binding DataGridVisibility, Converter={StaticResource VisibilityToBool}, UpdateSourceTrigger=PropertyChanged}" Height="30" Margin="10,10,10,10" Background="Orange" Content="Update"></Button>
+                        <Button Command="{Binding CloseItemMenuCommand}" Height="30" Margin="10,0,10,10" Background="Red" Content="Close"  ></Button>
                     </StackPanel>
 
-                    <StackPanel>
-                        <StackPanel x:Name="PostGameStatsMenu" Visibility="Collapsed">
-                            <Label HorizontalAlignment="Center" Content="User ID"></Label>
-                            <TextBox x:Name="GameStatsUserID"  Margin="10,0" Background="White"></TextBox>
-                            <Label HorizontalAlignment="Center" Content="Game ID"></Label>
-                            <TextBox x:Name="GameStatsGameID"  Margin="10,0" Background="White"></TextBox>
-                        </StackPanel>
-
-                        <StackPanel x:Name="PutGameStatsMenu" Visibility="Collapsed">
-                            <CheckBox x:Name="GameStatsIsGameLaunched" HorizontalAlignment="Center"  Margin="0,10" Content="Is Game Launched"></CheckBox>
-                            <Label HorizontalAlignment="Center" Content="Gotten Achievements"></Label>
-                            <TextBox x:Name="GameStatsGottenAchievements"  Margin="10,0" Background="White"></TextBox>
-                            <Label HorizontalAlignment="Center" Content="Hours Played"></Label>
-                            <TextBox x:Name="GameStatsHoursPlayed"  Margin="10,0" Background="White"></TextBox>
-                        </StackPanel>
-                    </StackPanel>
-
-                    <StackPanel>
-                        <StackPanel x:Name="PostReviewMenu" Visibility="Collapsed">
-                            <Label HorizontalAlignment="Center" Content="Game ID"></Label>
-                            <TextBox x:Name="ReviewGameID"  Margin="10,0" Background="White"></TextBox>
-                            <Label HorizontalAlignment="Center" Content="User ID"></Label>
-                            <TextBox x:Name="ReviewUserID"  Margin="10,0" Background="White"></TextBox>
-
-                        </StackPanel>
-                        <StackPanel x:Name="PutReviewMenu" Visibility="Collapsed">
-                            <CheckBox x:Name="ReviewIsPositive" HorizontalAlignment="Center"  Margin="0,10" Content="Is Positive"></CheckBox>
-                            <Label HorizontalAlignment="Center" Content="Text (optional)"></Label>
-                            <TextBox x:Name="ReviewText"  Margin="10,0" Background="White" TextWrapping="Wrap"></TextBox>
-                        </StackPanel>
-                    </StackPanel>
-
-                    <StackPanel x:Name="UserMenu" Visibility="Collapsed">
-                        <Label HorizontalAlignment="Center" Content="Login"></Label>
-                        <TextBox x:Name="UserLogin"  Margin="10,0" Background="White"></TextBox>
-                        <Label HorizontalAlignment="Center" Content="Password"></Label>
-                        <TextBox x:Name="UserPassword"  Margin="10,0" Background="White"></TextBox>
-                        <Label HorizontalAlignment="Center" Content="Nickname"></Label>
-                        <TextBox x:Name="UserNickname"  Margin="10,0" Background="White"></TextBox>
-                        <Label HorizontalAlignment="Center" Content="Email (optional)"></Label>
-                        <TextBox x:Name="UserEmail"  Margin="10,0" Background="White"></TextBox>
-                    </StackPanel>
-
-                </StackPanel>
-
-                <StackPanel x:Name="ErrorLogPanel" Grid.Row="2" VerticalAlignment="Bottom" Visibility="Collapsed">
-                    <Line X1="0" X2="220" Stroke="Black" Margin="0,10,0,10"></Line>
-                    <TextBlock TextAlignment="Center" x:Name="ErrorTextBlock" Background="White" Height="auto" Margin="10,0" Visibility="Visible" TextWrapping="Wrap"></TextBlock>
-                </StackPanel>
-
-                <StackPanel Grid.Row="3"  VerticalAlignment="Bottom">
-                    <Line X1="0" X2="220" Margin="0,10,0,0" Stroke="Black"></Line>
-                    <Button x:Name="MenuSubmitBtn"  Click="MenuSubmitBtn_Click" Height="30" Margin="10,10,10,10" Background="Lime" Content="Submit"></Button>
-                    <Button x:Name="MenuCloseBtn" Click="MenuCloseBtn_Click" Height="30" Margin="10,0,10,10" Background="Red" Content="Close"></Button>
-                </StackPanel>
-
-            </Grid>
-        </Border>
-
+                </Grid>
+            </Border>
+        </Grid>
     </Grid>
-
-
 </Window>
